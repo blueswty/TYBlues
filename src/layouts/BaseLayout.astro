@@ -1,0 +1,46 @@
+---
+import "../styles/global.css";
+import { NAV_ITEMS, SITE_DESCRIPTION, SITE_TITLE } from "../consts";
+
+interface Props {
+  title?: string;
+  description?: string;
+  pathname?: string;
+}
+
+const {
+  title = SITE_TITLE,
+  description = SITE_DESCRIPTION,
+  pathname = Astro.url.pathname
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container site-header-inner">
+        <a class="brand" href="/">{SITE_TITLE}</a>
+        <nav class="nav" aria-label="Main navigation">
+          {NAV_ITEMS.map((item) => (
+            <a href={item.href} aria-current={pathname === item.href ? "page" : undefined}>
+              {item.label}
+            </a>
+          ))}
+        </nav>
+      </div>
+    </header>
+    <main class="site-shell">
+      <slot />
+    </main>
+    <footer class="container site-footer">
+      <p>Built with Astro. Content-first, fast by default, easy to maintain.</p>
+    </footer>
+  </body>
+</html>

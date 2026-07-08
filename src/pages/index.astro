@@ -1,0 +1,173 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ContentCard from "../components/ContentCard.astro";
+import GalleryCard from "../components/GalleryCard.astro";
+import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
+
+const blogPosts = (await getCollection("blog", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+
+const weeklyPosts = (await getCollection("weekly", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 2);
+
+const galleryItems = (await getCollection("gallery"))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 2);
+---
+
+<BaseLayout title={`${SITE_TITLE} | Home`} description={SITE_DESCRIPTION}>
+  <div class="container home-shell">
+    <section class="home-hero">
+      <div class="home-hero-main">
+        <span class="eyebrow">Independent maker / writer / observer</span>
+        <h1>这里会慢慢长成一个人的长期内容基地。</h1>
+        <p class="home-lead">
+          我用博客记录值得沉淀的主题，用周刊整理一周的输入与判断，也给照片和生活片段留一点位置。
+          希望这里最终像一个稳定、轻盈、可持续生长的数字居所。
+        </p>
+        <div class="hero-actions">
+          <a class="button" href="/blog">进入博客</a>
+          <a class="button-secondary" href="/weekly">翻周刊</a>
+          <a class="button-secondary" href="/gallery">看相册</a>
+        </div>
+      </div>
+
+      <aside class="home-hero-side">
+        <div class="home-note">
+          <p class="home-note-label">Now</p>
+          <p class="home-note-body">
+            正在搭建一个简约但有科技气质的个人站，把写作、周刊和影像收进同一套系统。
+          </p>
+        </div>
+        <div class="home-note">
+          <p class="home-note-label">Workflow</p>
+          <p class="home-note-body">
+            Markdown 写作，Git 管理内容，Astro 生成静态页，后续接入 Cloudflare Pages 和图床。
+          </p>
+        </div>
+        <div class="home-status-row">
+          <span class="status-pill">Blog</span>
+          <span class="status-pill">Weekly</span>
+          <span class="status-pill">Gallery</span>
+          <span class="status-pill">RSS</span>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section">
+      <div class="home-strip">
+        <a class="strip-card" href="/about">
+          <span class="strip-kicker">About</span>
+          <strong>写一份会不断更新的个人说明书</strong>
+          <span>你是谁，在做什么，长期关心什么。</span>
+        </a>
+        <a class="strip-card" href="/blog">
+          <span class="strip-kicker">Writing</span>
+          <strong>把零散经验写成长期有效的内容</strong>
+          <span>技术、工具、工作流、思考都可以沉淀下来。</span>
+        </a>
+        <a class="strip-card" href="/gallery">
+          <span class="strip-kicker">Photos</span>
+          <strong>给生活和影像留一些不功利的位置</strong>
+          <span>相册入口先轻量承接，后续再扩展成完整图库。</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="section home-stack">
+      <div class="home-column home-column-wide">
+        <div class="section-heading">
+          <div>
+            <h2>Recent Writings</h2>
+            <p>最近写的文章会先堆在这里，保持首页始终有更新感。</p>
+          </div>
+          <a class="button-secondary" href="/blog">All Posts</a>
+        </div>
+        <div class="grid cols-1">
+          {blogPosts.map((post) => (
+            <ContentCard
+              href={`/blog/${post.slug}/`}
+              title={post.data.title}
+              description={post.data.description}
+              meta={[post.data.pubDate.toLocaleDateString("zh-CN")]}
+              tags={post.data.tags}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div class="home-column">
+        <div class="section-heading">
+          <div>
+            <h2>Corner</h2>
+            <p>保留一点不像“栏目”的角落，更像个人页面。</p>
+          </div>
+        </div>
+        <div class="stack-cards">
+          <article class="card soft-card">
+            <p class="eyebrow">Current Focus</p>
+            <h3>先建立稳定的输出节奏</h3>
+            <p class="muted">
+              首页不是一次性设计完的，它应该随着你的文章、项目、照片和兴趣一起慢慢变化。
+            </p>
+          </article>
+          <article class="card soft-card">
+            <p class="eyebrow">Favorite Format</p>
+            <h3>周刊很适合作为更新引擎</h3>
+            <p class="muted">
+              当没有长文可发时，周刊依然能维持站点活性，也能帮助你形成持续记录的手感。
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section home-stack">
+      <div class="home-column">
+        <div class="section-heading">
+          <div>
+            <h2>Weekly Notes</h2>
+            <p>像时间流里的短暂停靠点，轻一点，也更连续。</p>
+          </div>
+          <a class="button-secondary" href="/weekly">All Issues</a>
+        </div>
+        <div class="timeline">
+          {weeklyPosts.map((issue) => (
+            <ContentCard
+              href={`/weekly/${issue.slug}/`}
+              title={issue.data.title}
+              description={issue.data.description}
+              meta={[`Issue ${issue.data.issue}`, issue.data.pubDate.toLocaleDateString("zh-CN")]}
+              tags={issue.data.tags}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div class="home-column">
+        <div class="section-heading">
+          <div>
+            <h2>Photo Glimpses</h2>
+            <p>不是完整作品集，更像留在首页上的一些呼吸感。</p>
+          </div>
+          <a class="button-secondary" href="/gallery">Open Gallery</a>
+        </div>
+        <div class="stack-cards">
+          {galleryItems.map((item) => (
+            <GalleryCard
+              title={item.data.title}
+              description={item.data.description}
+              cover={item.data.cover}
+              href={item.data.externalUrl}
+              location={item.data.location}
+              tags={item.data.tags}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

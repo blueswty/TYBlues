@@ -1,0 +1,33 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import GalleryCard from "../../components/GalleryCard.astro";
+
+const galleryItems = (await getCollection("gallery"))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout title="Gallery" description="相册与影像入口">
+  <div class="container">
+    <header class="page-header">
+      <span class="eyebrow">Gallery</span>
+      <h1 class="page-title">给图片一个轻量但体面的入口。</h1>
+      <p class="page-intro">
+        这里先用集合和卡片来管理相册入口。后续你可以把每个卡片链接到独立相册页、
+        外部图床、R2 目录，或者接一个更完整的摄影展示流。
+      </p>
+    </header>
+    <div class="grid cols-3">
+      {galleryItems.map((item) => (
+        <GalleryCard
+          title={item.data.title}
+          description={item.data.description}
+          cover={item.data.cover}
+          href={item.data.externalUrl}
+          location={item.data.location}
+          tags={item.data.tags}
+        />
+      ))}
+    </div>
+  </div>
+</BaseLayout>

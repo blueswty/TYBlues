@@ -1,0 +1,34 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+export async function getStaticPaths() {
+  const issues = await getCollection("weekly", ({ data }) => !data.draft);
+  return issues.map((issue) => ({
+    params: { slug: issue.slug },
+    props: { issue }
+  }));
+}
+
+const { issue } = Astro.props;
+const { Content } = await render(issue);
+---
+
+<BaseLayout title={`${issue.data.title} | Weekly`} description={issue.data.description}>
+  <article class="post-shell">
+    <p class="eyebrow">Weekly Issue #{issue.data.issue}</p>
+    <h1>{issue.data.title}</h1>
+    <div class="meta">
+      <span>{issue.data.pubDate.toLocaleDateString("zh-CN")}</span>
+      {issue.data.highlights.length > 0 && <span>{issue.data.highlights.length} highlights</span>}
+    </div>
+    {issue.data.tags.length > 0 && (
+      <div class="tag-row">
+        {issue.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+      </div>
+    )}
+    <div class="post-body">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>
