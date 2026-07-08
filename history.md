@@ -132,3 +132,47 @@ npm.cmd run dev
 ### Collaboration Note
 
 从本条开始，后续在这个项目中的关键对话、决策、改动方向和操作建议，将持续追加到本文件，方便在其他电脑上继续协作。
+
+## 2026-07-08 Deployment Issue
+
+### Symptom
+
+Cloudflare 构建日志显示：
+
+- `npm run build` 成功
+- Astro 静态构建成功
+- `dist` 正常生成
+- 失败发生在后续执行 `npx wrangler deploy` 时
+
+### Root Cause
+
+当前项目是标准静态 Astro 站点，适合部署到 Cloudflare Pages 的静态产物模式：
+
+- 构建命令：`npm run build`
+- 输出目录：`dist`
+
+但实际部署流程又额外执行了：
+
+```bash
+npx wrangler deploy
+```
+
+这会把项目当成 Cloudflare Workers / Astro Cloudflare 适配器项目继续处理，并尝试运行类似 `astro add cloudflare` 的自动配置流程，最终报错：
+
+- `Missing file or directory: public/.assetsignore`
+
+这不是当前站点代码本身的构建问题，而是部署目标和部署命令不匹配。
+
+### Recommended Fix
+
+优先方案：
+
+- 使用 Cloudflare Pages 的静态站点部署方式
+- 只保留：
+  - Build command: `npm run build`
+  - Output directory: `dist`
+- 不要再执行 `npx wrangler deploy`
+
+### Note
+
+如果未来要把站点改成 Cloudflare Workers 运行时方案，再单独接入 Astro 的 Cloudflare adapter，而不是在当前静态站点上混用两种部署路径。
