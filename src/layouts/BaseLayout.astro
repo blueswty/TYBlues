@@ -22,7 +22,9 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <title>{title}</title>
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont/style.css" />
+    <script is:inline async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   </head>
   <body>
     <header class="site-header">
@@ -45,11 +47,11 @@ const {
         <p>Built with Astro. Content-first, fast by default, easy to maintain.</p>
         <div class="site-footer-stats" aria-label="Site statistics">
           <span class="site-stat" id="busuanzi_container_site_pv">
-            Total Views
+            Total Views 
             <strong id="busuanzi_value_site_pv">0</strong>
           </span>
           <span class="site-stat" id="busuanzi_container_page_pv">
-            This Page
+            This Page 
             <strong id="busuanzi_value_page_pv">0</strong>
           </span>
         </div>

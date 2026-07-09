@@ -15,43 +15,45 @@ const { album } = Astro.props;
 ---
 
 <BaseLayout title={`${album.data.title} | Gallery`} description={album.data.description}>
-  <article class="post-shell album-shell">
-    <header class="album-header">
-      <p class="eyebrow">Photo Album</p>
-      <h1>{album.data.title}</h1>
-      <div class="meta">
-        <span>{album.data.pubDate.toLocaleDateString("zh-CN")}</span>
-        {album.data.location && <span>{album.data.location}</span>}
-        {album.data.camera && <span>{album.data.camera}</span>}
-        <span>{album.data.images.length} photos</span>
-      </div>
-      {album.data.tags.length > 0 && (
-        <div class="tag-row">
-          {album.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+  <div class="album-layout">
+    <article class="post-shell album-shell">
+      <header class="album-header">
+        <p class="eyebrow">Photo Album</p>
+        <h1>{album.data.title}</h1>
+        <div class="meta">
+          <span>{album.data.pubDate.toLocaleDateString("zh-CN")}</span>
+          {album.data.location && <span>{album.data.location}</span>}
+          {album.data.camera && <span>{album.data.camera}</span>}
+          <span>{album.data.images.length} photos</span>
         </div>
-      )}
-    </header>
+        {album.data.tags.length > 0 && (
+          <div class="tag-row">
+            {album.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+          </div>
+        )}
+      </header>
 
-    <section class="album-summary">
-      <div class="post-body">
-        <p>{album.data.description}</p>
-      </div>
-      {album.data.externalUrl && (
-        <p class="album-link-row">
-          <a class="button-secondary" href={album.data.externalUrl} target="_blank" rel="noreferrer">
-            Open External Album
-          </a>
-        </p>
-      )}
-    </section>
+      <section class="album-summary">
+        <div class="post-body">
+          <p>{album.data.description}</p>
+        </div>
+        {album.data.externalUrl && (
+          <p class="album-link-row">
+            <a class="button-secondary" href={album.data.externalUrl} target="_blank" rel="noreferrer">
+              Open External Album
+            </a>
+          </p>
+        )}
+      </section>
 
-    <section class="album-grid">
-      {album.data.images.map((image) => (
-        <figure class="album-item">
-          <img src={image.src} alt={image.alt ?? album.data.title} loading="lazy" />
-          {image.caption && <figcaption>{image.caption}</figcaption>}
-        </figure>
-      ))}
-    </section>
-  </article>
+      <section class="album-grid">
+        {album.data.images.map((image) => (
+          <figure class="album-item">
+            <img src={image.src} alt={image.alt ?? album.data.title} loading="lazy" />
+            {image.caption && <figcaption>{image.caption}</figcaption>}
+          </figure>
+        ))}
+      </section>
+    </article>
+  </div>
 </BaseLayout>

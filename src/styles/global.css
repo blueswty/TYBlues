@@ -23,13 +23,20 @@ html {
 
 body {
   margin: 0;
-  font-family: "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-family: "LXGW WenKai", "霞鹜文楷", "Kaiti SC", "STKaiti", "KaiTi", serif;
   color: var(--text);
   background:
     radial-gradient(circle at top, rgba(183, 195, 166, 0.28), transparent 34%),
     radial-gradient(circle at 82% 18%, rgba(222, 214, 187, 0.45), transparent 26%),
     linear-gradient(180deg, #fbfaf4 0%, #f5f4ed 52%, #f0ecdf 100%);
   min-height: 100vh;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
 }
 
 a {
@@ -691,8 +698,14 @@ img {
   border-radius: var(--radius);
 }
 
+.album-layout {
+  width: min(calc(100% - 2rem), 68rem);
+  margin: 2rem auto 0;
+}
+
 .album-shell {
-  width: min(calc(100% - 2rem), 76rem);
+  width: 100%;
+  margin: 0;
 }
 
 .album-header {
@@ -909,6 +922,10 @@ img {
 
   .album-grid {
     grid-template-columns: 1fr;
+  }
+
+  .album-layout {
+    width: min(calc(100% - 2rem), 42rem);
   }
 
   .post-layout {
