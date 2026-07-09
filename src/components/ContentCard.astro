@@ -5,14 +5,16 @@ interface Props {
   description: string;
   meta?: string[];
   tags?: string[];
+  featured?: boolean;
 }
 
-const { href, title, description, meta = [], tags = [] } = Astro.props;
+const { href, title, description, meta = [], tags = [], featured = false } = Astro.props;
 ---
 
 <article class="content-card">
   <div class="meta">
     {meta.map((item) => <span>{item}</span>)}
+    {featured && <span>Featured</span>}
   </div>
   <h3><a href={href}>{title}</a></h3>
   <p class="muted">{description}</p>

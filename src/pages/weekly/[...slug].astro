@@ -1,34 +1,51 @@
 ---
 import { getCollection, render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { entrySlug } from "../../utils/content";
 
 export async function getStaticPaths() {
   const issues = await getCollection("weekly", ({ data }) => !data.draft);
   return issues.map((issue) => ({
-    params: { slug: issue.slug },
+    params: { slug: entrySlug(issue.id) },
     props: { issue }
   }));
 }
 
 const { issue } = Astro.props;
-const { Content } = await render(issue);
+const { Content, headings } = await render(issue);
+const tocHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
 ---
 
 <BaseLayout title={`${issue.data.title} | Weekly`} description={issue.data.description}>
-  <article class="post-shell">
-    <p class="eyebrow">Weekly Issue #{issue.data.issue}</p>
-    <h1>{issue.data.title}</h1>
-    <div class="meta">
-      <span>{issue.data.pubDate.toLocaleDateString("zh-CN")}</span>
-      {issue.data.highlights.length > 0 && <span>{issue.data.highlights.length} highlights</span>}
-    </div>
-    {issue.data.tags.length > 0 && (
-      <div class="tag-row">
-        {issue.data.tags.map((tag) => <span class="tag">{tag}</span>)}
-      </div>
+  <div class="post-layout">
+    {tocHeadings.length > 0 && (
+      <aside class="post-toc">
+        <p class="post-toc-title">On This Page</p>
+        <a class="post-toc-page-title" href="#article-top">{issue.data.title}</a>
+        <nav aria-label="Table of contents">
+          {tocHeadings.map((heading) => (
+            <a class={`depth-${heading.depth}`} href={`#${heading.slug}`}>
+              {heading.text}
+            </a>
+          ))}
+        </nav>
+      </aside>
     )}
-    <div class="post-body">
-      <Content />
-    </div>
-  </article>
+    <article class="post-shell" id="article-top">
+      <p class="eyebrow">Weekly Issue #{issue.data.issue}</p>
+      <h1>{issue.data.title}</h1>
+      <div class="meta">
+        <span>{issue.data.pubDate.toLocaleDateString("zh-CN")}</span>
+        {issue.data.highlights.length > 0 && <span>{issue.data.highlights.length} highlights</span>}
+      </div>
+      {issue.data.tags.length > 0 && (
+        <div class="tag-row">
+          {issue.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+        </div>
+      )}
+      <div class="post-body">
+        <Content />
+      </div>
+    </article>
+  </div>
 </BaseLayout>

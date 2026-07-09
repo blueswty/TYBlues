@@ -35,6 +35,15 @@ const gallery = defineCollection({
     pubDate: z.coerce.date(),
     location: z.string().optional(),
     externalUrl: z.string().url().optional(),
+    draft: z.boolean().default(false),
+    camera: z.string().optional(),
+    images: z.array(
+      z.object({
+        src: z.string(),
+        alt: z.string().optional(),
+        caption: z.string().optional()
+      })
+    ).default([]),
     tags: z.array(z.string()).default([])
   })
 });

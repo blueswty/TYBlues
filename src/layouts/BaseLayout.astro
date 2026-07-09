@@ -42,5 +42,89 @@ const {
     <footer class="container site-footer">
       <p>Built with Astro. Content-first, fast by default, easy to maintain.</p>
     </footer>
+    <script is:inline>
+      const codeBlocks = document.querySelectorAll(".post-body pre");
+
+      for (const block of codeBlocks) {
+        if (block.querySelector(".code-copy-button")) continue;
+
+        const code = block.querySelector("code");
+        if (!code) continue;
+
+        const languageClass = [...code.classList].find((className) => className.startsWith("language-"));
+        if (languageClass) {
+          block.dataset.language = languageClass.replace("language-", "");
+        }
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "code-copy-button";
+        button.textContent = "Copy";
+
+        button.addEventListener("click", async () => {
+          try {
+            await navigator.clipboard.writeText(code.textContent ?? "");
+            button.textContent = "Copied";
+            button.classList.add("is-copied");
+
+            window.setTimeout(() => {
+              button.textContent = "Copy";
+              button.classList.remove("is-copied");
+            }, 1400);
+          } catch {
+            button.textContent = "Failed";
+
+            window.setTimeout(() => {
+              button.textContent = "Copy";
+            }, 1400);
+          }
+        });
+
+        block.append(button);
+      }
+
+      const tocLinks = [...document.querySelectorAll(".post-toc a")];
+      const headings = tocLinks
+        .map((link) => {
+          const href = link.getAttribute("href");
+          if (!href?.startsWith("#")) return null;
+
+          const heading = document.getElementById(href.slice(1));
+          if (!heading) return null;
+
+          return { link, heading };
+        })
+        .filter(Boolean);
+
+      if (headings.length > 0) {
+        const setActive = (activeId) => {
+          for (const item of headings) {
+            item.link.classList.toggle("is-active", item.heading.id === activeId);
+          }
+        };
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            const visibleEntries = entries
+              .filter((entry) => entry.isIntersecting)
+              .sort((left, right) => right.intersectionRatio - left.intersectionRatio);
+
+            if (visibleEntries.length > 0) {
+              setActive(visibleEntries[0].target.id);
+            }
+          },
+          {
+            rootMargin: "-96px 0px -60% 0px",
+            threshold: [0, 0.2, 0.6, 1]
+          }
+        );
+
+        for (const item of headings) {
+          observer.observe(item.heading);
+        }
+
+        setActive(headings[0].heading.id);
+      }
+    </script>
   </body>
 </html>

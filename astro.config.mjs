@@ -6,7 +6,12 @@ export default defineConfig({
   integrations: [sitemap()],
   markdown: {
     shikiConfig: {
-      theme: "github-dark"
+      theme: "github-light",
+      langAlias: {
+        C: "c",
+        CPP: "cpp",
+        CXX: "cpp"
+      }
     }
   }
 });

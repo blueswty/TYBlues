@@ -4,16 +4,15 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import ContentCard from "../components/ContentCard.astro";
 import GalleryCard from "../components/GalleryCard.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
+import { blogPermalink, galleryPermalink, sortFeaturedFirst, weeklyPermalink } from "../utils/content";
 
-const blogPosts = (await getCollection("blog", ({ data }) => !data.draft))
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 3);
+const blogPosts = sortFeaturedFirst(await getCollection("blog", ({ data }) => !data.draft)).slice(0, 3);
 
 const weeklyPosts = (await getCollection("weekly", ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 2);
 
-const galleryItems = (await getCollection("gallery"))
+const galleryItems = (await getCollection("gallery", ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 2);
 ---
@@ -89,11 +88,12 @@ const galleryItems = (await getCollection("gallery"))
         <div class="grid cols-1">
           {blogPosts.map((post) => (
             <ContentCard
-              href={`/blog/${post.slug}/`}
+              href={blogPermalink(post.id)}
               title={post.data.title}
               description={post.data.description}
               meta={[post.data.pubDate.toLocaleDateString("zh-CN")]}
               tags={post.data.tags}
+              featured={post.data.featured}
             />
           ))}
         </div>
@@ -137,7 +137,7 @@ const galleryItems = (await getCollection("gallery"))
         <div class="timeline">
           {weeklyPosts.map((issue) => (
             <ContentCard
-              href={`/weekly/${issue.slug}/`}
+              href={weeklyPermalink(issue.id)}
               title={issue.data.title}
               description={issue.data.description}
               meta={[`Issue ${issue.data.issue}`, issue.data.pubDate.toLocaleDateString("zh-CN")]}
@@ -161,9 +161,10 @@ const galleryItems = (await getCollection("gallery"))
               title={item.data.title}
               description={item.data.description}
               cover={item.data.cover}
-              href={item.data.externalUrl}
+              href={galleryPermalink(item.id)}
               location={item.data.location}
               tags={item.data.tags}
+              imageCount={item.data.images.length}
             />
           ))}
         </div>

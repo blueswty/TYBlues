@@ -4,7 +4,7 @@
 
 - `blog`：博客文章
 - `weekly`：周刊归档
-- `gallery`：相册入口
+- `gallery`：相册列表与多图详情页
 
 ## 本地开发
 
@@ -40,6 +40,7 @@ src/content/
 - 博客：在 `src/content/blog/` 下新增 Markdown 文件
 - 周刊：在 `src/content/weekly/` 下新增 Markdown 文件
 - 相册：在 `src/content/gallery/` 下新增入口文件，封面可先放远程图
+- 相册详情：每个相册文件可使用 `images` 数组维护多张照片与说明
 
 ## 后续建议
 

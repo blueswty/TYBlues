@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import ContentCard from "../../components/ContentCard.astro";
+import { weeklyPermalink } from "../../utils/content";
 
 const issues = (await getCollection("weekly", ({ data }) => !data.draft))
   .sort((a, b) => b.data.issue - a.data.issue);
@@ -13,13 +14,13 @@ const issues = (await getCollection("weekly", ({ data }) => !data.draft))
       <span class="eyebrow">Weekly</span>
       <h1 class="page-title">把一周的输入，整理成输出。</h1>
       <p class="page-intro">
-        适合记录值得回看的链接、趋势、产品观察和一些不够长但很有价值的想法。
+        你所做的每件事，都将在未来连成一条线。
       </p>
     </header>
     <div class="timeline">
       {issues.map((issue) => (
         <ContentCard
-          href={`/weekly/${issue.slug}/`}
+          href={weeklyPermalink(issue.id)}
           title={issue.data.title}
           description={issue.data.description}
           meta={[`Issue ${issue.data.issue}`, issue.data.pubDate.toLocaleDateString("zh-CN")]}

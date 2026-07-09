@@ -3,23 +3,29 @@ interface Props {
   title: string;
   description: string;
   cover: string;
-  href?: string;
+  href: string;
   location?: string;
   tags?: string[];
+  imageCount?: number;
 }
 
-const { title, description, cover, href, location, tags = [] } = Astro.props;
+const { title, description, cover, href, location, tags = [], imageCount = 0 } = Astro.props;
 ---
 
 <article class="content-card">
   <div class="gallery-cover">
-    <img src={cover} alt={title} loading="lazy" />
+    <a href={href}>
+      <img src={cover} alt={title} loading="lazy" />
+    </a>
   </div>
   <h3>
-    {href ? <a href={href} target="_blank" rel="noreferrer">{title}</a> : title}
+    <a href={href}>{title}</a>
   </h3>
   <p class="muted">{description}</p>
-  {location && <p class="meta"><span>{location}</span></p>}
+  <p class="meta">
+    {location && <span>{location}</span>}
+    {imageCount > 0 && <span>{imageCount} photos</span>}
+  </p>
   {tags.length > 0 && (
     <div class="tag-row">
       {tags.map((tag) => <span class="tag">{tag}</span>)}

@@ -176,3 +176,34 @@ npx wrangler deploy
 ### Note
 
 如果未来要把站点改成 Cloudflare Workers 运行时方案，再单独接入 Astro 的 Cloudflare adapter，而不是在当前静态站点上混用两种部署路径。
+
+## 2026-07-09 Link Visibility
+
+### Symptom
+
+新增博客正文中的超链接没有明显视觉标记，读者难以判断哪些文字可以点击。
+
+### Change
+
+已为文章正文链接增加更清晰的可见性样式：
+
+- 使用强调色区分普通正文文字
+- 增加下划线
+- 增加 hover 状态反馈
+- 保持整体仍与当前米色主题一致
+
+## 2026-07-09 Gallery Upgrade
+
+### Goal
+
+将 `gallery` 从单卡片外链入口升级为“每个相册支持多张图片”的结构。
+
+### Change
+
+已完成：
+
+- `gallery` schema 支持 `images` 数组
+- 每个相册可配置多张图片、alt 和 caption
+- 新增相册详情页路由
+- 首页和 Gallery 列表页改为优先链接到本站相册详情页
+- 保留可选 `externalUrl`，用于跳转外部完整图库

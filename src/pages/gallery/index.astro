@@ -2,8 +2,9 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import GalleryCard from "../../components/GalleryCard.astro";
+import { galleryPermalink } from "../../utils/content";
 
-const galleryItems = (await getCollection("gallery"))
+const galleryItems = (await getCollection("gallery", ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
@@ -11,10 +12,9 @@ const galleryItems = (await getCollection("gallery"))
   <div class="container">
     <header class="page-header">
       <span class="eyebrow">Gallery</span>
-      <h1 class="page-title">给图片一个轻量但体面的入口。</h1>
+      <h1 class="page-title">时空弧光。</h1>
       <p class="page-intro">
-        这里先用集合和卡片来管理相册入口。后续你可以把每个卡片链接到独立相册页、
-        外部图床、R2 目录，或者接一个更完整的摄影展示流。
+        当下瞬间可能是未来阴天里的一道光，把握现在、雕刻现在。
       </p>
     </header>
     <div class="grid cols-3">
@@ -23,9 +23,10 @@ const galleryItems = (await getCollection("gallery"))
           title={item.data.title}
           description={item.data.description}
           cover={item.data.cover}
-          href={item.data.externalUrl}
+          href={galleryPermalink(item.id)}
           location={item.data.location}
           tags={item.data.tags}
+          imageCount={item.data.images.length}
         />
       ))}
     </div>
