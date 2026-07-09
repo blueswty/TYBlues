@@ -8,3 +8,21 @@ export const NAV_ITEMS = [
   { href: "/gallery", label: "Gallery" },
   { href: "/about", label: "About" }
 ];
+
+export const COMMENTS_CONFIG = {
+  provider: "giscus",
+  giscus: {
+    enabled: true,
+    repo: "blueswty/TYBlues",
+    repoId: "R_kgDOTRjj0w",
+    category: "Q&A",
+    categoryId: "DIC_kwDOTRjj084DA0Ii",
+    mapping: "pathname",
+    strict: "0",
+    reactionsEnabled: "1",
+    emitMetadata: "0",
+    inputPosition: "top",
+    theme: "noborder_light",
+    lang: "zh-CN"
+  }
+};

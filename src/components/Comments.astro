@@ -1,0 +1,40 @@
+---
+import { COMMENTS_CONFIG } from "../consts";
+
+const { provider, giscus } = COMMENTS_CONFIG;
+const showGiscus =
+  provider === "giscus" &&
+  giscus.enabled &&
+  giscus.repo.trim().length > 0 &&
+  giscus.repoId.trim().length > 0 &&
+  giscus.category.trim().length > 0 &&
+  giscus.categoryId.trim().length > 0;
+---
+
+{showGiscus && (
+  <section class="comments-section">
+    <div class="comments-section-header">
+      <p class="comments-section-kicker">Discussion</p>
+      <p class="comments-section-intro">
+        基于 GitHub Discussions。可以直接参与讨论、补充观点，或者留下你的问题。
+      </p>
+    </div>
+    <script
+      is:inline
+      src="https://giscus.app/client.js"
+      data-repo={giscus.repo}
+      data-repo-id={giscus.repoId}
+      data-category={giscus.category}
+      data-category-id={giscus.categoryId}
+      data-mapping={giscus.mapping}
+      data-strict={giscus.strict}
+      data-reactions-enabled={giscus.reactionsEnabled}
+      data-emit-metadata={giscus.emitMetadata}
+      data-input-position={giscus.inputPosition}
+      data-theme={giscus.theme}
+      data-lang={giscus.lang}
+      crossorigin="anonymous"
+      async
+    ></script>
+  </section>
+)}

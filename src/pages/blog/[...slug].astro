@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from "astro:content";
+import Comments from "../../components/Comments.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { entrySlug, sortFeaturedFirst } from "../../utils/content";
 
@@ -46,6 +47,7 @@ const tocHeadings = headings.filter((heading) => heading.depth === 2 || heading.
       <div class="post-body">
         <Content />
       </div>
+      <Comments />
     </article>
   </div>
 </BaseLayout>

@@ -481,10 +481,51 @@ img {
 
 .site-footer {
   margin-top: 4rem;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(125, 160, 200, 0.08);
+  padding: 1.1rem 0 0.2rem;
+  border-top: 1px solid rgba(92, 107, 90, 0.1);
   color: var(--muted);
   font-size: 0.92rem;
+}
+
+.site-footer-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.site-footer-main p {
+  margin: 0;
+}
+
+.site-footer-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.site-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.72rem;
+  border: 1px solid rgba(92, 107, 90, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 252, 245, 0.72);
+  color: var(--muted);
+  line-height: 1;
+}
+
+.site-stat strong {
+  color: var(--accent-strong);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+#busuanzi_container_site_pv,
+#busuanzi_container_page_pv {
+  display: none;
 }
 
 .home-shell {
@@ -651,14 +692,39 @@ img {
 }
 
 .album-shell {
-  width: min(calc(100% - 2rem), 70rem);
+  width: min(calc(100% - 2rem), 76rem);
+}
+
+.album-header {
+  margin-bottom: 2rem;
+}
+
+.album-header .meta {
+  margin-top: 0.75rem;
+}
+
+.album-header .tag-row {
+  margin-top: 0.9rem;
+}
+
+.album-summary {
+  margin-bottom: 2.2rem;
+  padding: 1.4rem 1.5rem;
+  border: 1px solid rgba(92, 107, 90, 0.12);
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(255, 252, 246, 0.94) 0%, rgba(247, 242, 231, 0.9) 100%);
+  box-shadow: var(--shadow);
+}
+
+.album-summary .post-body {
+  margin-top: 0;
 }
 
 .album-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
-  margin-top: 2rem;
+  gap: 1.35rem;
+  margin-top: 0;
 }
 
 .album-item {
@@ -685,7 +751,7 @@ img {
 }
 
 .album-link-row {
-  margin-top: 1.5rem;
+  margin: 1.2rem 0 0;
 }
 
 .post-layout {
@@ -762,6 +828,55 @@ img {
   font-size: 0.9rem;
 }
 
+.comments-section {
+  margin-top: 3rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(92, 107, 90, 0.12);
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(255, 252, 246, 0.98) 0%, rgba(247, 242, 231, 0.94) 100%);
+  box-shadow: var(--shadow);
+}
+
+.comments-section-header {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(92, 107, 90, 0.1);
+}
+
+.comments-section-kicker {
+  margin: 0 0 0.45rem;
+  color: var(--accent-strong);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.comments-section h2 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.comments-section-intro {
+  margin: 0.55rem 0 0;
+  max-width: 38rem;
+  color: var(--muted);
+  line-height: 1.75;
+  font-size: 0.95rem;
+}
+
+.comments-section :global(.giscus) {
+  margin-top: 0.2rem;
+}
+
+.comments-section :global(iframe.giscus-frame) {
+  width: 100%;
+  border-radius: 18px;
+  background: rgba(255, 252, 245, 0.72);
+}
+
 @media (max-width: 900px) {
   .grid.cols-3,
   .grid.cols-2 {
@@ -787,6 +902,11 @@ img {
     flex-direction: column;
   }
 
+  .site-footer-main {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
   .album-grid {
     grid-template-columns: 1fr;
   }
@@ -799,5 +919,10 @@ img {
   .post-toc {
     position: static;
     order: 2;
+  }
+
+  .comments-section {
+    padding: 1.15rem;
+    border-radius: 20px;
   }
 }

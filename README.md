@@ -48,3 +48,9 @@ src/content/
 - 部署到 Cloudflare Pages
 - 图片上传接 PicGo + 图床或 Cloudflare R2
 - 后续可继续接入搜索、评论、订阅和项目页
+
+## Analytics and Comments
+
+- Cloudflare Web Analytics: enable it directly in the Cloudflare Pages project dashboard
+- Giscus comments: fill the `COMMENTS_CONFIG.giscus` fields in `src/consts.ts`
+- Giscus requires GitHub Discussions to be enabled for the target repository
