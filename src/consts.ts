@@ -1,6 +1,7 @@
-export const SITE_TITLE = "Blues的个人空间";
+export const SITE_TITLE = "Blues 的个人空间";
 export const SITE_DESCRIPTION = "个人网站、博客、周刊与相册。";
 export const SITE_URL = "https://tyblues.cn";
+
 export const NAV_ITEMS = [
   { href: "/", label: "Home" },
   { href: "/blog", label: "Blog" },
