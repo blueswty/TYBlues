@@ -482,8 +482,19 @@ img {
   height: 100%;
 }
 
+.gallery-cover a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.72), transparent 58%),
+    rgba(235, 229, 212, 0.55);
+}
+
 .gallery-cover img {
   object-fit: cover;
+  object-position: center;
 }
 
 .site-footer {
@@ -576,10 +587,14 @@ img {
 
 .home-hero-main h1 {
   margin: 1rem 0;
-  max-width: 12ch;
-  font-size: clamp(2.6rem, 7vw, 5rem);
-  line-height: 0.96;
+  max-width: 10ch;
+  font-size: clamp(2.15rem, 5.6vw, 3.9rem);
+  line-height: 1.02;
   letter-spacing: -0.05em;
+}
+
+.home-hero-title span {
+  display: block;
 }
 
 .home-lead {
@@ -797,8 +812,12 @@ img {
 .album-item img {
   width: 100%;
   border-radius: 16px;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
+  height: auto;
+  max-height: min(78vh, 72rem);
+  object-fit: contain;
+  object-position: center;
+  background:
+    linear-gradient(180deg, rgba(255, 252, 246, 0.95) 0%, rgba(244, 238, 225, 0.95) 100%);
 }
 
 .album-item figcaption {
