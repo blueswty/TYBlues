@@ -808,10 +808,6 @@ img {
   font-size: 0.95rem;
 }
 
-.album-link-row {
-  margin: 1.2rem 0 0;
-}
-
 .post-layout {
   width: min(calc(100% - 2rem), 78rem);
   margin: 2rem auto 0;

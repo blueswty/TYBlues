@@ -37,13 +37,6 @@ const { album } = Astro.props;
         <div class="post-body">
           <p>{album.data.description}</p>
         </div>
-        {album.data.externalUrl && (
-          <p class="album-link-row">
-            <a class="button-secondary" href={album.data.externalUrl} target="_blank" rel="noreferrer">
-              Open External Album
-            </a>
-          </p>
-        )}
       </section>
 
       <section class="album-grid">
