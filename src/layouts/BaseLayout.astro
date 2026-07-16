@@ -13,6 +13,14 @@ const {
   description = SITE_DESCRIPTION,
   pathname = Astro.url.pathname
 } = Astro.props;
+
+function isActiveNavItem(href: string) {
+  if (href === "/") {
+    return pathname === "/";
+  }
+
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 ---
 
 <!doctype html>
@@ -32,7 +40,7 @@ const {
         <a class="brand" href="/">{SITE_TITLE}</a>
         <nav class="nav" aria-label="Main navigation">
           {NAV_ITEMS.map((item) => (
-            <a href={item.href} aria-current={pathname === item.href ? "page" : undefined}>
+            <a href={item.href} aria-current={isActiveNavItem(item.href) ? "page" : undefined}>
               {item.label}
             </a>
           ))}

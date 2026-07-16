@@ -1,13 +1,45 @@
+技术栈框架不变的前提下，将当前站点重构，取消周刊、相册页，现有的文件夹和文件先保留，我后续自己删除。
+
+
+
+导航栏内容：
+
+- 博客
+
+  预览页左侧支持点击标签分类，也可以清除标签还原；
+
+  还原状态是按照时间排序进行；
+
+  
+
+- 链接
+
+- 在线工具
+
+  根据AI推荐的分类正在落地
+
+- 一拍即合
+
+​		用来添加推荐的可购买电子硬件等产品
+
+​		类似于博客的形式，预览列表可以大概了解内容是什么产品：有标题，支持最多6行简介，跟博客一样支持标签筛选，不需要显示上架日期，预览左侧有图片。
+
+​		列表中每一项
 
 
 
 
-字体：[霞鹜文楷](https://zhida.zhihu.com/search?content_id=262246740&content_type=Article&match_order=1&q=霞鹜文楷&zhida_source=entity)
-
-​	[tw93/Kami: 👩‍🚒 Good content deserves good paper.](https://github.com/tw93/Kami/tree/main)
 
 
 
-[PicGo - The Ultimate Image Uploader for Efficient Creators](https://picgo.app/)
 
-[Quick start](https://gohugo.io/getting-started/quick-start/?trk=article-ssr-frontend-pulse_little-text-block)
+
+针对工具页，提出以下修改：
+
+1. 取消一些不必要的小标签，如：Embedded Toolkit、Tools等；
+2. 左侧导航栏只保留工具总览及清单，其他都删除；
+3. 删除总览页的 落地方向、首批能力栏目；
+4. 工具具体页面中，同样删除DATA、CRC之类的小标签；
+5. 工具具体页面中，不要可以手动 填充示例的按钮；
+6. 工具具体页面中，删除**适用场景**、**使用建议**、**输入关注点**、**输出内容**、本地计算
+7. 工具具体页面中，复制按钮体现在生成数据的标题栏后面，小图标+复制的文字按钮形式，统一右侧对其。

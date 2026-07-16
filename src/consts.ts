@@ -6,7 +6,8 @@ export const NAV_ITEMS = [
   { href: "/", label: "Home" },
   { href: "/blog", label: "Blog" },
   { href: "/weekly", label: "Weekly" },
-  { href: "/gallery", label: "Gallery" }
+  { href: "/gallery", label: "Gallery" },
+  { href: "/tools", label: "Tools" }
 ];
 
 export const COMMENTS_CONFIG = {

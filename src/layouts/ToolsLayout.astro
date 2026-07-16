@@ -1,0 +1,69 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import { TOOLS_BY_CATEGORY, toolPath } from "../data/tools";
+
+interface Props {
+  title: string;
+  description: string;
+  currentCategoryId?: string;
+  currentToolId?: string;
+}
+
+const { title, description, currentCategoryId, currentToolId } = Astro.props;
+---
+
+<BaseLayout title={title} description={description} pathname={Astro.url.pathname}>
+  <div class="container tools-shell">
+    <aside class="tools-sidebar card">
+      <button class="tools-nav-toggle" type="button" data-tools-nav-toggle aria-expanded="false">
+        工具目录
+      </button>
+
+      <nav class="tools-nav" aria-label="Tools navigation" data-tools-nav>
+        <a
+          href="/tools"
+          class:list={["tools-overview-link", { "is-current": !currentToolId }]}
+          aria-current={!currentToolId ? "page" : undefined}
+        >
+          工具总览
+        </a>
+
+        {TOOLS_BY_CATEGORY.map((category) => (
+          <section class="tools-nav-section">
+            <div class:list={["tools-nav-section-title", { "is-active": currentCategoryId === category.id }]}>
+              {category.name}
+            </div>
+            <div class="tools-nav-links">
+              {category.tools.map((tool) => (
+                <a
+                  href={toolPath(tool)}
+                  class:list={["tools-nav-link", { "is-current": currentToolId === tool.id }]}
+                  aria-current={currentToolId === tool.id ? "page" : undefined}
+                >
+                  {tool.name}
+                </a>
+              ))}
+            </div>
+          </section>
+        ))}
+      </nav>
+    </aside>
+
+    <div class="tools-main">
+      <slot />
+    </div>
+  </div>
+
+  <script is:inline>
+    const toggle = document.querySelector("[data-tools-nav-toggle]");
+    const nav = document.querySelector("[data-tools-nav]");
+
+    if (toggle && nav) {
+      toggle.addEventListener("click", () => {
+        const expanded = toggle.getAttribute("aria-expanded") === "true";
+        toggle.setAttribute("aria-expanded", expanded ? "false" : "true");
+        nav.classList.toggle("is-open", !expanded);
+      });
+    }
+  </script>
+</BaseLayout>

@@ -1,0 +1,35 @@
+---
+import ToolsLayout from "../../layouts/ToolsLayout.astro";
+import { TOOLS_BY_CATEGORY, toolPath } from "../../data/tools";
+---
+
+<ToolsLayout
+  title="在线工具"
+  description="面向电子硬件与嵌入式开发的在线工具集合，覆盖校验、报文、寄存器、串口和外设参数计算。"
+>
+
+  <section class="tool-workspace">
+    <div class="page-header" style="margin: 0 0 1rem;">
+      <h2>按分类选择工具</h2>
+      <p class="tool-section-intro">
+        所有工具均在浏览器本地处理，不涉及数据上传。
+      </p>
+    </div>
+
+    <div class="tool-section-grid">
+      {TOOLS_BY_CATEGORY.map((category) => (
+        <article class="tool-card">
+          <p class="tool-panel-label">{category.name}</p>
+          <h3>{category.description}</h3>
+          <ul class="tool-card-list">
+            {category.tools.map((tool) => (
+              <li>
+                <a href={toolPath(tool)}>{tool.name}</a>
+              </li>
+            ))}
+          </ul>
+        </article>
+      ))}
+    </div>
+  </section>
+</ToolsLayout>

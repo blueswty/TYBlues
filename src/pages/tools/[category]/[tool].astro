@@ -1,0 +1,725 @@
+---
+import ToolsLayout from "../../../layouts/ToolsLayout.astro";
+import { TOOL_DEFINITIONS, getToolByParams } from "../../../data/tools";
+
+export function getStaticPaths() {
+  return TOOL_DEFINITIONS.map((tool) => ({
+    params: {
+      category: tool.categoryId,
+      tool: tool.slug
+    },
+    props: {
+      tool
+    }
+  }));
+}
+
+const { tool } = Astro.props;
+const current = getToolByParams(Astro.params.category ?? "", Astro.params.tool ?? "") ?? tool;
+
+if (!current) {
+  throw new Error("Tool not found");
+}
+---
+
+<ToolsLayout
+  title={`${current.name} | 在线工具`}
+  description={current.summary}
+  currentCategoryId={current.categoryId}
+  currentToolId={current.id}
+>
+  <section class="tool-workspace" data-tool-id={current.id}>
+    <header class="tool-page-header">
+      <h1>{current.name}</h1>
+      <p class="tool-lead">{current.intro}</p>
+    </header>
+
+    <div class="tool-matrix">
+      <div>
+        {current.id === "crc-checksum" && (
+          <div class="tool-form">
+            <div class="tool-field-grid">
+              <div class="tool-field">
+                <label for="crc-input-mode">输入模式</label>
+                <select id="crc-input-mode">
+                  <option value="hex">HEX 报文</option>
+                  <option value="text">普通文本</option>
+                </select>
+              </div>
+              <div class="tool-field">
+                <label for="crc-algorithm">校验算法</label>
+                <select id="crc-algorithm">
+                  <option value="crc16modbus">CRC16 Modbus</option>
+                  <option value="crc8">CRC8</option>
+                  <option value="crc16">CRC16</option>
+                  <option value="crc32">CRC32</option>
+                  <option value="xor">XOR</option>
+                  <option value="lrc">LRC</option>
+                  <option value="sum">SUM</option>
+                </select>
+              </div>
+              <div class="tool-field is-span-2">
+                <label for="crc-input">原始数据</label>
+                <textarea id="crc-input">01 03 00 00 00 02</textarea>
+                <small>支持空格分隔的 HEX 字节流，也支持直接输入普通文本。</small>
+              </div>
+            </div>
+            <div class="tool-action-row">
+              <button class="tool-button-secondary" id="crc-clear" type="button">清空输入</button>
+            </div>
+            <p class="tool-error" id="crc-error"></p>
+          </div>
+        )}
+
+        {current.id === "base-convert" && (
+          <div class="tool-form">
+            <div class="tool-field-grid">
+              <div class="tool-field is-span-2">
+                <label for="base-input">输入值</label>
+                <input id="base-input" value="FF80" />
+              </div>
+              <div class="tool-field">
+                <label for="base-format">输入格式</label>
+                <select id="base-format">
+                  <option value="16">HEX</option>
+                  <option value="10">DEC</option>
+                  <option value="2">BIN</option>
+                  <option value="8">OCT</option>
+                </select>
+              </div>
+              <div class="tool-field">
+                <label for="base-width">位宽</label>
+                <select id="base-width">
+                  <option value="8">8 bit</option>
+                  <option value="16" selected>16 bit</option>
+                  <option value="32">32 bit</option>
+                  <option value="64">64 bit</option>
+                </select>
+              </div>
+              <div class="tool-field">
+                <label for="base-signed">解释方式</label>
+                <select id="base-signed">
+                  <option value="unsigned">无符号</option>
+                  <option value="signed" selected>有符号</option>
+                </select>
+              </div>
+            </div>
+            <p class="tool-error" id="base-error"></p>
+          </div>
+        )}
+
+        {current.id === "text-hex-convert" && (
+          <div class="tool-form">
+            <div class="tool-field-grid">
+              <div class="tool-field">
+                <label for="texthex-mode">转换方向</label>
+                <select id="texthex-mode">
+                  <option value="text-to-hex">文本转 HEX</option>
+                  <option value="hex-to-text">HEX 转文本</option>
+                </select>
+              </div>
+              <div class="tool-field">
+                <label for="texthex-encoding">文本编码</label>
+                <select id="texthex-encoding">
+                  <option value="utf8">UTF-8</option>
+                  <option value="ascii">ASCII</option>
+                </select>
+              </div>
+              <div class="tool-field is-span-2">
+                <label for="texthex-input">输入内容</label>
+                <textarea id="texthex-input">AT+RST\r\n</textarea>
+              </div>
+            </div>
+            <p class="tool-error" id="texthex-error"></p>
+          </div>
+        )}
+
+        {current.id === "hash" && (
+          <div class="tool-form">
+            <div class="tool-field-grid">
+              <div class="tool-field">
+                <label for="hash-algorithm">摘要算法</label>
+                <select id="hash-algorithm">
+                  <option value="MD5">MD5</option>
+                  <option value="SHA-1">SHA-1</option>
+                  <option value="SHA-256">SHA-256</option>
+                  <option value="SHA-512">SHA-512</option>
+                </select>
+              </div>
+              <div class="tool-field">
+                <label for="hash-casing">输出大小写</label>
+                <select id="hash-casing">
+                  <option value="upper">大写</option>
+                  <option value="lower">小写</option>
+                </select>
+              </div>
+              <div class="tool-field is-span-2">
+                <label for="hash-input">输入文本</label>
+                <textarea id="hash-input">firmware-v1.2.3</textarea>
+              </div>
+            </div>
+            <p class="tool-error" id="hash-error"></p>
+          </div>
+        )}
+
+        {current.id === "ieee754" && (
+          <div class="tool-form">
+            <div class="tool-field-grid">
+              <div class="tool-field">
+                <label for="ieee-mode">模式</label>
+                <select id="ieee-mode">
+                  <option value="hex-to-float">HEX 转浮点</option>
+                  <option value="float-to-hex">浮点转 HEX</option>
+                </select>
+              </div>
+              <div class="tool-field">
+                <label for="ieee-precision">精度</label>
+                <select id="ieee-precision">
+                  <option value="32">float32</option>
+                  <option value="64">float64</option>
+                </select>
+              </div>
+              <div class="tool-field">
+                <label for="ieee-endian">字节序</label>
+                <select id="ieee-endian">
+                  <option value="big">大端</option>
+                  <option value="little">小端</option>
+                </select>
+              </div>
+              <div class="tool-field is-span-2">
+                <label for="ieee-input">输入值</label>
+                <input id="ieee-input" value="3F800000" />
+              </div>
+            </div>
+            <p class="tool-error" id="ieee-error"></p>
+          </div>
+        )}
+
+        {current.id === "aes" && (
+          <div class="tool-form">
+            <div class="tool-field-grid">
+              <div class="tool-field">
+                <label for="aes-mode">模式</label>
+                <select id="aes-mode">
+                  <option value="encrypt">加密</option>
+                  <option value="decrypt">解密</option>
+                </select>
+              </div>
+              <div class="tool-field">
+                <label for="aes-key-encoding">Key / IV 编码</label>
+                <select id="aes-key-encoding">
+                  <option value="utf8">UTF-8 文本</option>
+                  <option value="hex">HEX</option>
+                </select>
+              </div>
+              <div class="tool-field">
+                <label for="aes-input-encoding">解密输入编码</label>
+                <select id="aes-input-encoding">
+                  <option value="base64">Base64</option>
+                  <option value="hex">HEX</option>
+                </select>
+              </div>
+              <div class="tool-field">
+                <label for="aes-key">Key</label>
+                <input id="aes-key" value="1234567890ABCDEF" />
+              </div>
+              <div class="tool-field is-span-2">
+                <label for="aes-iv">IV</label>
+                <input id="aes-iv" value="ABCDEF1234567890" />
+              </div>
+              <div class="tool-field is-span-2">
+                <label for="aes-input">输入内容</label>
+                <textarea id="aes-input">embedded-debug</textarea>
+                <small>当前实现基于浏览器原生 Web Crypto，默认采用 AES-CBC。</small>
+              </div>
+            </div>
+            <p class="tool-error" id="aes-error"></p>
+          </div>
+        )}
+
+        {current.id === "modbus-rtu" && (
+          <div class="tool-form">
+            <div class="tool-field-grid">
+              <div class="tool-field">
+                <label for="modbus-slave">从站地址</label>
+                <input id="modbus-slave" value="1" />
+              </div>
+              <div class="tool-field">
+                <label for="modbus-func">功能码</label>
+                <select id="modbus-func">
+                  <option value="3">03 - 读保持寄存器</option>
+                  <option value="4">04 - 读输入寄存器</option>
+                  <option value="6">06 - 写单寄存器</option>
+                  <option value="16">10 - 写多个寄存器</option>
+                </select>
+              </div>
+              <div class="tool-field">
+                <label for="modbus-address">起始地址</label>
+                <input id="modbus-address" value="0" />
+              </div>
+              <div class="tool-field">
+                <label for="modbus-quantity">数量 / 数据长度</label>
+                <input id="modbus-quantity" value="2" />
+              </div>
+              <div class="tool-field is-span-2">
+                <label for="modbus-raw">原始响应报文</label>
+                <textarea id="modbus-raw">01 03 04 00 0A 00 14 DA 3E</textarea>
+              </div>
+            </div>
+            <p class="tool-error" id="modbus-error"></p>
+          </div>
+        )}
+
+        {current.id === "register-parser" && (
+          <div class="tool-form">
+            <div class="tool-field-grid">
+              <div class="tool-field">
+                <label for="register-format">输入格式</label>
+                <select id="register-format">
+                  <option value="16">HEX</option>
+                  <option value="10">DEC</option>
+                  <option value="2">BIN</option>
+                </select>
+              </div>
+              <div class="tool-field">
+                <label for="register-width">位宽</label>
+                <select id="register-width">
+                  <option value="8">8 bit</option>
+                  <option value="16">16 bit</option>
+                  <option value="32">32 bit</option>
+                </select>
+              </div>
+              <div class="tool-field is-span-2">
+                <label for="register-input">寄存器值</label>
+                <input id="register-input" value="A53C" />
+              </div>
+              <div class="tool-field is-span-2">
+                <label for="register-fields">字段定义</label>
+                <textarea id="register-fields">EN,0,1,总使能
+MODE,1,3,模式选择
+FAULT,8,1,故障标志</textarea>
+                <small>格式：字段名,起始位,位宽,说明</small>
+              </div>
+            </div>
+            <p class="tool-error" id="register-error"></p>
+          </div>
+        )}
+
+        {current.id === "baudrate-calculator" && (
+          <div class="tool-form">
+            <div class="tool-field-grid">
+              <div class="tool-field">
+                <label for="baud-clock">外设时钟 (Hz)</label>
+                <input id="baud-clock" value="72000000" />
+              </div>
+              <div class="tool-field">
+                <label for="baud-target">目标波特率 (bps)</label>
+                <input id="baud-target" value="115200" />
+              </div>
+              <div class="tool-field">
+                <label for="baud-oversampling">过采样</label>
+                <select id="baud-oversampling">
+                  <option value="16">16x</option>
+                  <option value="8">8x</option>
+                </select>
+              </div>
+            </div>
+            <p class="tool-error" id="baud-error"></p>
+          </div>
+        )}
+
+        {current.id === "timer-pwm-adc" && (
+          <div class="tool-form">
+            <div class="tool-tab-row">
+              <button class="tool-tab-button is-active" data-tool-tab="timer" type="button">Timer</button>
+              <button class="tool-tab-button" data-tool-tab="pwm" type="button">PWM</button>
+              <button class="tool-tab-button" data-tool-tab="adc" type="button">ADC / DAC</button>
+            </div>
+
+            <div data-tool-panel="timer">
+              <div class="tool-field-grid">
+                <div class="tool-field">
+                  <label for="timer-clock">定时器时钟 (Hz)</label>
+                  <input id="timer-clock" value="72000000" />
+                </div>
+                <div class="tool-field">
+                  <label for="timer-prescaler">预分频 PSC</label>
+                  <input id="timer-prescaler" value="71" />
+                </div>
+                <div class="tool-field">
+                  <label for="timer-arr">自动重装 ARR</label>
+                  <input id="timer-arr" value="999" />
+                </div>
+              </div>
+            </div>
+
+            <div data-tool-panel="pwm" hidden>
+              <div class="tool-field-grid">
+                <div class="tool-field">
+                  <label for="pwm-compare">比较值 CCR</label>
+                  <input id="pwm-compare" value="249" />
+                </div>
+              </div>
+            </div>
+
+            <div data-tool-panel="adc" hidden>
+              <div class="tool-field-grid">
+                <div class="tool-field">
+                  <label for="adc-vref">参考电压 (V)</label>
+                  <input id="adc-vref" value="3.3" />
+                </div>
+                <div class="tool-field">
+                  <label for="adc-bits">分辨率</label>
+                  <select id="adc-bits">
+                    <option value="10">10 bit</option>
+                    <option value="12">12 bit</option>
+                    <option value="16">16 bit</option>
+                  </select>
+                </div>
+                <div class="tool-field">
+                  <label for="adc-code">ADC 码值</label>
+                  <input id="adc-code" value="2048" />
+                </div>
+                <div class="tool-field">
+                  <label for="adc-voltage">目标电压 (V)</label>
+                  <input id="adc-voltage" value="1.65" />
+                </div>
+              </div>
+            </div>
+
+            <p class="tool-error" id="timer-error"></p>
+          </div>
+        )}
+
+        {current.id === "ohms-law" && (
+          <div class="tool-form">
+            <div class="tool-field-grid">
+              <div class="tool-field">
+                <label for="ohm-voltage">电压 V</label>
+                <input id="ohm-voltage" value="12" />
+              </div>
+              <div class="tool-field">
+                <label for="ohm-current">电流 A</label>
+                <input id="ohm-current" value="0.02" />
+              </div>
+              <div class="tool-field">
+                <label for="ohm-resistance">电阻 Ohm</label>
+                <input id="ohm-resistance" />
+              </div>
+              <div class="tool-field">
+                <label for="ohm-power">功率 W</label>
+                <input id="ohm-power" />
+              </div>
+            </div>
+            <div class="tool-action-row">
+              <button class="tool-button-secondary" id="ohm-clear" type="button">清空</button>
+            </div>
+            <p class="tool-error" id="ohm-error"></p>
+          </div>
+        )}
+
+        {current.id === "voltage-divider" && (
+          <div class="tool-form">
+            <div class="tool-field-grid">
+              <div class="tool-field">
+                <label for="divider-vin">输入电压 Vin</label>
+                <input id="divider-vin" value="12" />
+              </div>
+              <div class="tool-field">
+                <label for="divider-target">目标输出 Vout</label>
+                <input id="divider-target" value="3.3" />
+              </div>
+              <div class="tool-field">
+                <label for="divider-r1">上臂电阻 R1</label>
+                <input id="divider-r1" value="10000" />
+              </div>
+              <div class="tool-field">
+                <label for="divider-r2">下臂电阻 R2</label>
+                <input id="divider-r2" value="3300" />
+              </div>
+            </div>
+            <p class="tool-error" id="divider-error"></p>
+          </div>
+        )}
+
+        {current.id === "led-resistor" && (
+          <div class="tool-form">
+            <div class="tool-field-grid">
+              <div class="tool-field">
+                <label for="led-supply">供电电压 Vcc</label>
+                <input id="led-supply" value="5" />
+              </div>
+              <div class="tool-field">
+                <label for="led-vf">单颗 LED 压降 Vf</label>
+                <input id="led-vf" value="2" />
+              </div>
+              <div class="tool-field">
+                <label for="led-count">串联颗数</label>
+                <input id="led-count" value="1" />
+              </div>
+              <div class="tool-field">
+                <label for="led-current">目标电流 A</label>
+                <input id="led-current" value="0.01" />
+              </div>
+            </div>
+            <p class="tool-error" id="led-error"></p>
+          </div>
+        )}
+
+        {current.id === "rc-calculator" && (
+          <div class="tool-form">
+            <div class="tool-field-grid">
+              <div class="tool-field">
+                <label for="rc-resistance">电阻 R (Ohm)</label>
+                <input id="rc-resistance" value="10000" />
+              </div>
+              <div class="tool-field">
+                <label for="rc-capacitance">电容 C (uF)</label>
+                <input id="rc-capacitance" value="0.1" />
+              </div>
+            </div>
+            <p class="tool-error" id="rc-error"></p>
+          </div>
+        )}
+
+        {current.id === "opamp-gain" && (
+          <div class="tool-form">
+            <div class="tool-field-grid">
+              <div class="tool-field">
+                <label for="opamp-topology">拓扑</label>
+                <select id="opamp-topology">
+                  <option value="non-inverting">同相放大</option>
+                  <option value="inverting">反相放大</option>
+                </select>
+              </div>
+              <div class="tool-field">
+                <label for="opamp-target-gain">目标增益</label>
+                <input id="opamp-target-gain" value="10" />
+              </div>
+              <div class="tool-field">
+                <label for="opamp-rin">输入电阻 Rin</label>
+                <input id="opamp-rin" value="10000" />
+              </div>
+              <div class="tool-field">
+                <label for="opamp-rf">反馈电阻 Rf</label>
+                <input id="opamp-rf" value="90000" />
+              </div>
+              <div class="tool-field is-span-2">
+                <label for="opamp-vin">输入信号幅值 Vin</label>
+                <input id="opamp-vin" value="0.25" />
+              </div>
+            </div>
+            <p class="tool-error" id="opamp-error"></p>
+          </div>
+        )}
+      </div>
+
+      <aside>
+        {current.id === "crc-checksum" && (
+          <div class="tool-output-card">
+            <div class="tool-output-item">
+              <div class="tool-output-head"><p class="tool-output-label">校验值 HEX</p><button class="tool-copy-action" type="button" data-copy-target="crc-result-hex"><span aria-hidden="true">[]</span><span>复制</span></button></div>
+              <pre id="crc-result-hex"></pre>
+            </div>
+            <div class="tool-output-item">
+              <div class="tool-output-head"><p class="tool-output-label">校验值 DEC</p><button class="tool-copy-action" type="button" data-copy-target="crc-result-dec"><span aria-hidden="true">[]</span><span>复制</span></button></div>
+              <pre id="crc-result-dec"></pre>
+            </div>
+            <div class="tool-output-item">
+              <div class="tool-output-head"><p class="tool-output-label">校验字节</p><button class="tool-copy-action" type="button" data-copy-target="crc-result-bytes"><span aria-hidden="true">[]</span><span>复制</span></button></div>
+              <pre id="crc-result-bytes"></pre>
+            </div>
+            <div class="tool-output-item">
+              <div class="tool-output-head"><p class="tool-output-label">完整报文</p><button class="tool-copy-action" type="button" data-copy-target="crc-result-frame"><span aria-hidden="true">[]</span><span>复制</span></button></div>
+              <pre id="crc-result-frame"></pre>
+            </div>
+            <div class="tool-output-item">
+              <div class="tool-output-head"><p class="tool-output-label">C 数组</p><button class="tool-copy-action" type="button" data-copy-target="crc-result-c"><span aria-hidden="true">[]</span><span>复制</span></button></div>
+              <pre id="crc-result-c"></pre>
+            </div>
+          </div>
+        )}
+
+        {current.id === "base-convert" && (
+          <div class="tool-output-card">
+            <div class="tool-output-item"><div class="tool-output-head"><p class="tool-output-label">BIN</p><button class="tool-copy-action" type="button" data-copy-target="base-out-bin"><span aria-hidden="true">[]</span><span>复制</span></button></div><pre id="base-out-bin"></pre></div>
+            <div class="tool-output-item"><div class="tool-output-head"><p class="tool-output-label">DEC</p><button class="tool-copy-action" type="button" data-copy-target="base-out-dec"><span aria-hidden="true">[]</span><span>复制</span></button></div><pre id="base-out-dec"></pre></div>
+            <div class="tool-output-item"><div class="tool-output-head"><p class="tool-output-label">HEX</p><button class="tool-copy-action" type="button" data-copy-target="base-out-hex"><span aria-hidden="true">[]</span><span>复制</span></button></div><pre id="base-out-hex"></pre></div>
+            <div class="tool-output-item"><div class="tool-output-head"><p class="tool-output-label">OCT</p><button class="tool-copy-action" type="button" data-copy-target="base-out-oct"><span aria-hidden="true">[]</span><span>复制</span></button></div><pre id="base-out-oct"></pre></div>
+            <div class="tool-output-item"><div class="tool-output-head"><p class="tool-output-label">字节拆分</p><button class="tool-copy-action" type="button" data-copy-target="base-out-bytes"><span aria-hidden="true">[]</span><span>复制</span></button></div><pre id="base-out-bytes"></pre></div>
+            <div class="tool-output-item"><p class="tool-output-label">说明</p><pre id="base-out-note"></pre></div>
+          </div>
+        )}
+
+        {current.id === "text-hex-convert" && (
+          <div class="tool-output-card">
+            <div class="tool-output-item"><div class="tool-output-head"><p class="tool-output-label">文本结果</p><button class="tool-copy-action" type="button" data-copy-target="texthex-out-text"><span aria-hidden="true">[]</span><span>复制</span></button></div><pre id="texthex-out-text"></pre></div>
+            <div class="tool-output-item"><div class="tool-output-head"><p class="tool-output-label">HEX</p><button class="tool-copy-action" type="button" data-copy-target="texthex-out-hex"><span aria-hidden="true">[]</span><span>复制</span></button></div><pre id="texthex-out-hex"></pre></div>
+            <div class="tool-output-item"><div class="tool-output-head"><p class="tool-output-label">DEC 数组</p><button class="tool-copy-action" type="button" data-copy-target="texthex-out-dec"><span aria-hidden="true">[]</span><span>复制</span></button></div><pre id="texthex-out-dec"></pre></div>
+            <div class="tool-output-item"><div class="tool-output-head"><p class="tool-output-label">C 数组</p><button class="tool-copy-action" type="button" data-copy-target="texthex-out-c"><span aria-hidden="true">[]</span><span>复制</span></button></div><pre id="texthex-out-c"></pre></div>
+            <div class="tool-output-item"><div class="tool-output-head"><p class="tool-output-label">长度</p><button class="tool-copy-action" type="button" data-copy-target="texthex-out-length"><span aria-hidden="true">[]</span><span>复制</span></button></div><pre id="texthex-out-length"></pre></div>
+          </div>
+        )}
+
+        {current.id === "hash" && (
+          <div class="tool-output-card">
+            <div class="tool-output-item"><div class="tool-output-head"><p class="tool-output-label">摘要结果</p><button class="tool-copy-action" type="button" data-copy-target="hash-out-digest"><span aria-hidden="true">[]</span><span>复制</span></button></div><pre id="hash-out-digest"></pre></div>
+            <div class="tool-output-item"><div class="tool-output-head"><p class="tool-output-label">长度</p><button class="tool-copy-action" type="button" data-copy-target="hash-out-length"><span aria-hidden="true">[]</span><span>复制</span></button></div><pre id="hash-out-length"></pre></div>
+          </div>
+        )}
+
+        {current.id === "ieee754" && (
+          <div class="tool-output-card">
+            <div class="tool-output-item"><div class="tool-output-head"><p class="tool-output-label">浮点值</p><button class="tool-copy-action" type="button" data-copy-target="ieee-out-float"><span aria-hidden="true">[]</span><span>复制</span></button></div><pre id="ieee-out-float"></pre></div>
+            <div class="tool-output-item"><div class="tool-output-head"><p class="tool-output-label">HEX</p><button class="tool-copy-action" type="button" data-copy-target="ieee-out-hex"><span aria-hidden="true">[]</span><span>复制</span></button></div><pre id="ieee-out-hex"></pre></div>
+            <div class="tool-output-item"><div class="tool-output-head"><p class="tool-output-label">二进制位串</p><button class="tool-copy-action" type="button" data-copy-target="ieee-out-binary"><span aria-hidden="true">[]</span><span>复制</span></button></div><pre id="ieee-out-binary"></pre></div>
+            <div class="tool-output-item"><p class="tool-output-label">Sign / Exponent / Mantissa</p><pre id="ieee-out-sign"></pre><pre id="ieee-out-exponent"></pre><pre id="ieee-out-mantissa"></pre></div>
+          </div>
+        )}
+
+        {current.id === "aes" && (
+          <div class="tool-output-card">
+            <div class="tool-output-item"><div class="tool-output-head"><p class="tool-output-label">文本结果</p><button class="tool-copy-action" type="button" data-copy-target="aes-out-text"><span aria-hidden="true">[]</span><span>复制</span></button></div><pre id="aes-out-text"></pre></div>
+            <div class="tool-output-item"><div class="tool-output-head"><p class="tool-output-label">HEX</p><button class="tool-copy-action" type="button" data-copy-target="aes-out-hex"><span aria-hidden="true">[]</span><span>复制</span></button></div><pre id="aes-out-hex"></pre></div>
+            <div class="tool-output-item"><div class="tool-output-head"><p class="tool-output-label">Base64</p><button class="tool-copy-action" type="button" data-copy-target="aes-out-base64"><span aria-hidden="true">[]</span><span>复制</span></button></div><pre id="aes-out-base64"></pre></div>
+          </div>
+        )}
+
+        {current.id === "modbus-rtu" && (
+          <div class="tool-output-card">
+            <div class="tool-output-item"><div class="tool-output-head"><p class="tool-output-label">请求帧</p><button class="tool-copy-action" type="button" data-copy-target="modbus-request"><span aria-hidden="true">[]</span><span>复制</span></button></div><pre id="modbus-request"></pre></div>
+            <div class="tool-output-item"><div class="tool-output-head"><p class="tool-output-label">请求 C 数组</p><button class="tool-copy-action" type="button" data-copy-target="modbus-request-c"><span aria-hidden="true">[]</span><span>复制</span></button></div><pre id="modbus-request-c"></pre></div>
+            <div class="tool-output-item"><div class="tool-output-head"><p class="tool-output-label">响应解析</p><button class="tool-copy-action" type="button" data-copy-target="modbus-response"><span aria-hidden="true">[]</span><span>复制</span></button></div><pre id="modbus-response"></pre></div>
+          </div>
+        )}
+
+        {current.id === "register-parser" && (
+          <div class="tool-output-card">
+            <div class="tool-output-item"><div class="tool-output-head"><p class="tool-output-label">HEX 值</p><button class="tool-copy-action" type="button" data-copy-target="register-out-hex"><span aria-hidden="true">[]</span><span>复制</span></button></div><pre id="register-out-hex"></pre></div>
+            <div class="tool-output-item"><div class="tool-output-head"><p class="tool-output-label">字节拆分</p><button class="tool-copy-action" type="button" data-copy-target="register-out-bytes"><span aria-hidden="true">[]</span><span>复制</span></button></div><pre id="register-out-bytes"></pre></div>
+            <div class="tool-output-item">
+              <p class="tool-output-label">Bit View</p>
+              <div class="tool-bit-grid" id="register-bit-grid"></div>
+            </div>
+            <div class="tool-output-item">
+              <p class="tool-output-label">字段解析</p>
+              <table class="tool-inline-table">
+                <thead>
+                  <tr>
+                    <th>字段</th>
+                    <th>起始位</th>
+                    <th>位宽</th>
+                    <th>值</th>
+                    <th>说明</th>
+                  </tr>
+                </thead>
+                <tbody id="register-field-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {current.id === "baudrate-calculator" && (
+          <div class="tool-output-card">
+            <div class="tool-data-grid">
+              <div class="tool-stat"><span>推荐分频值</span><strong id="baud-best-divisor"></strong></div>
+              <div class="tool-stat"><span>实际波特率</span><strong id="baud-best-actual"></strong></div>
+              <div class="tool-stat"><span>误差</span><strong id="baud-best-error"></strong></div>
+            </div>
+            <div class="tool-output-item">
+              <p class="tool-output-label">候选参数</p>
+              <table class="tool-inline-table">
+                <thead>
+                  <tr>
+                    <th>Divisor</th>
+                    <th>Actual</th>
+                    <th>Error</th>
+                    <th>建议</th>
+                  </tr>
+                </thead>
+                <tbody id="baud-candidates"></tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {current.id === "timer-pwm-adc" && (
+          <div class="tool-output-card">
+            <div class="tool-data-grid">
+              <div class="tool-stat"><span>计数器时钟</span><strong id="timer-out-counter"></strong></div>
+              <div class="tool-stat"><span>溢出频率</span><strong id="timer-out-frequency"></strong></div>
+              <div class="tool-stat"><span>定时周期</span><strong id="timer-out-period"></strong></div>
+              <div class="tool-stat"><span>PWM 频率</span><strong id="pwm-out-frequency"></strong></div>
+              <div class="tool-stat"><span>PWM 占空比</span><strong id="pwm-out-duty"></strong></div>
+              <div class="tool-stat"><span>ADC 电压</span><strong id="adc-out-voltage"></strong></div>
+              <div class="tool-stat"><span>目标电压码值</span><strong id="adc-out-code"></strong></div>
+              <div class="tool-stat"><span>LSB 精度</span><strong id="adc-out-lsb"></strong></div>
+            </div>
+          </div>
+        )}
+
+        {current.id === "ohms-law" && (
+          <div class="tool-output-card">
+            <div class="tool-data-grid">
+              <div class="tool-stat"><span>电压</span><strong id="ohm-out-voltage"></strong></div>
+              <div class="tool-stat"><span>电流</span><strong id="ohm-out-current"></strong></div>
+              <div class="tool-stat"><span>电阻</span><strong id="ohm-out-resistance"></strong></div>
+              <div class="tool-stat"><span>功率</span><strong id="ohm-out-power"></strong></div>
+            </div>
+            <div class="tool-output-item"><p class="tool-output-label">说明</p><pre id="ohm-out-note"></pre></div>
+          </div>
+        )}
+
+        {current.id === "voltage-divider" && (
+          <div class="tool-output-card">
+            <div class="tool-data-grid">
+              <div class="tool-stat"><span>输出电压</span><strong id="divider-out-vout"></strong></div>
+              <div class="tool-stat"><span>分压比</span><strong id="divider-out-ratio"></strong></div>
+              <div class="tool-stat"><span>总电流</span><strong id="divider-out-current"></strong></div>
+            </div>
+            <div class="tool-output-item"><div class="tool-output-head"><p class="tool-output-label">反推建议</p><button class="tool-copy-action" type="button" data-copy-target="divider-out-suggested"><span aria-hidden="true">[]</span><span>复制</span></button></div><pre id="divider-out-suggested"></pre></div>
+          </div>
+        )}
+
+        {current.id === "led-resistor" && (
+          <div class="tool-output-card">
+            <div class="tool-data-grid">
+              <div class="tool-stat"><span>推荐电阻</span><strong id="led-out-resistor"></strong></div>
+              <div class="tool-stat"><span>电阻功耗</span><strong id="led-out-power"></strong></div>
+              <div class="tool-stat"><span>总压降</span><strong id="led-out-drop"></strong></div>
+              <div class="tool-stat"><span>电压余量</span><strong id="led-out-headroom"></strong></div>
+            </div>
+            <div class="tool-output-item"><div class="tool-output-head"><p class="tool-output-label">选型建议</p><button class="tool-copy-action" type="button" data-copy-target="led-out-note"><span aria-hidden="true">[]</span><span>复制</span></button></div><pre id="led-out-note"></pre></div>
+          </div>
+        )}
+
+        {current.id === "rc-calculator" && (
+          <div class="tool-output-card">
+            <div class="tool-data-grid">
+              <div class="tool-stat"><span>时间常数 tau</span><strong id="rc-out-tau"></strong></div>
+              <div class="tool-stat"><span>截止频率 fc</span><strong id="rc-out-fc"></strong></div>
+              <div class="tool-stat"><span>63.2% 充电时间</span><strong id="rc-out-charge"></strong></div>
+              <div class="tool-stat"><span>约 5tau 稳定</span><strong id="rc-out-settle"></strong></div>
+            </div>
+          </div>
+        )}
+
+        {current.id === "opamp-gain" && (
+          <div class="tool-output-card">
+            <div class="tool-data-grid">
+              <div class="tool-stat"><span>闭环增益</span><strong id="opamp-out-gain"></strong></div>
+              <div class="tool-stat"><span>理论输出</span><strong id="opamp-out-vout"></strong></div>
+            </div>
+            <div class="tool-output-item"><div class="tool-output-head"><p class="tool-output-label">目标增益反推</p><button class="tool-copy-action" type="button" data-copy-target="opamp-out-suggested"><span aria-hidden="true">[]</span><span>复制</span></button></div><pre id="opamp-out-suggested"></pre></div>
+          </div>
+        )}
+      </aside>
+    </div>
+  </section>
+
+  <script>
+    import { initToolPage } from "../../../scripts/tools-app";
+
+    initToolPage();
+  </script>
+</ToolsLayout>
