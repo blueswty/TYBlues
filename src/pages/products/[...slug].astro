@@ -1,28 +1,27 @@
 ---
 import { getCollection, render } from "astro:content";
-import Comments from "../../components/Comments.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { entrySlug, sortByPubDateDesc } from "../../utils/content";
 
 export async function getStaticPaths() {
-  const posts = sortByPubDateDesc(await getCollection("blog", ({ data }) => !data.draft));
-  return posts.map((post) => ({
-    params: { slug: entrySlug(post.id) },
-    props: { post }
+  const products = sortByPubDateDesc(await getCollection("products"));
+  return products.map((product) => ({
+    params: { slug: entrySlug(product.id) },
+    props: { product }
   }));
 }
 
-const { post } = Astro.props;
-const { Content, headings } = await render(post);
+const { product } = Astro.props;
+const { Content, headings } = await render(product);
 const tocHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
 ---
 
-<BaseLayout title={`${post.data.title} | Blog`} description={post.data.description}>
+<BaseLayout title={`${product.data.title} | 一拍即合`} description={product.data.description}>
   <div class="post-layout">
     {tocHeadings.length > 0 && (
       <aside class="post-toc">
         <p class="post-toc-title">On This Page</p>
-        <a class="post-toc-page-title" href="#article-top">{post.data.title}</a>
+        <a class="post-toc-page-title" href="#article-top">{product.data.title}</a>
         <nav aria-label="Table of contents">
           {tocHeadings.map((heading) => (
             <a class={`depth-${heading.depth}`} href={`#${heading.slug}`}>
@@ -33,21 +32,20 @@ const tocHeadings = headings.filter((heading) => heading.depth === 2 || heading.
       </aside>
     )}
     <article class="post-shell" id="article-top">
-      <p class="eyebrow">Blog Post</p>
-      <h1>{post.data.title}</h1>
-      <div class="meta">
-        <span>{post.data.pubDate.toLocaleDateString("zh-CN")}</span>
-        {post.data.updatedDate && <span>Updated {post.data.updatedDate.toLocaleDateString("zh-CN")}</span>}
-      </div>
-      {post.data.tags.length > 0 && (
+      <p class="eyebrow">Product</p>
+      <h1>{product.data.title}</h1>
+      {product.data.tags.length > 0 && (
         <div class="tag-row">
-          {post.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+          {product.data.tags.map((tag) => <span class="tag">{tag}</span>)}
         </div>
       )}
+      <div class="product-hero-image">
+        <img src={product.data.cover} alt={product.data.title} />
+      </div>
+      <p class="page-intro">{product.data.description}</p>
       <div class="post-body">
         <Content />
       </div>
-      <Comments />
     </article>
   </div>
 </BaseLayout>

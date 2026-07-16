@@ -16,7 +16,7 @@ const {
 
 function isActiveNavItem(href: string) {
   if (href === "/") {
-    return pathname === "/";
+    return pathname === "/" || pathname === "/blog" || pathname.startsWith("/blog/");
   }
 
   return pathname === href || pathname.startsWith(`${href}/`);
@@ -30,8 +30,6 @@ function isActiveNavItem(href: string) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <title>{title}</title>
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont/style.css" />
     <script is:inline async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   </head>
   <body>
@@ -65,7 +63,42 @@ function isActiveNavItem(href: string) {
         </div>
       </div>
     </footer>
+    <button class="back-to-top" type="button" aria-label="回到顶部" title="回到顶部">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m18 15-6-6-6 6"></path>
+      </svg>
+    </button>
     <script is:inline>
+      const siteHeader = document.querySelector(".site-header");
+      const backToTop = document.querySelector(".back-to-top");
+      let lastScrollY = window.scrollY;
+      let ticking = false;
+
+      const updateHeaderVisibility = () => {
+        const currentScrollY = window.scrollY;
+        const scrollingDown = currentScrollY > lastScrollY;
+
+        siteHeader?.classList.toggle("is-hidden", scrollingDown && currentScrollY > 80);
+        backToTop?.classList.toggle("is-visible", currentScrollY > 420);
+        lastScrollY = Math.max(currentScrollY, 0);
+        ticking = false;
+      };
+
+      window.addEventListener(
+        "scroll",
+        () => {
+          if (!ticking) {
+            window.requestAnimationFrame(updateHeaderVisibility);
+            ticking = true;
+          }
+        },
+        { passive: true }
+      );
+
+      backToTop?.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
       const codeBlocks = document.querySelectorAll(".post-body pre");
 
       for (const block of codeBlocks) {

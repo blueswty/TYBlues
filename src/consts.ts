@@ -1,13 +1,12 @@
 export const SITE_TITLE = "Blues 的个人空间";
-export const SITE_DESCRIPTION = "个人网站、博客、周刊与相册。";
+export const SITE_DESCRIPTION = "博客、在线工具、常用链接与电子硬件推荐。";
 export const SITE_URL = "https://tyblues.cn";
 
 export const NAV_ITEMS = [
-  { href: "/", label: "Home" },
-  { href: "/blog", label: "Blog" },
-  { href: "/weekly", label: "Weekly" },
-  { href: "/gallery", label: "Gallery" },
-  { href: "/tools", label: "Tools" }
+  { href: "/", label: "博客" },
+  { href: "/links", label: "链接" },
+  { href: "/tools", label: "在线工具" },
+  { href: "/products", label: "一拍即合" }
 ];
 
 export const COMMENTS_CONFIG = {

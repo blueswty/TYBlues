@@ -4,9 +4,7 @@ description: "新版Keil5 不再默认安装AC5编译器。"
 pubDate: 2026-07-09
 tags:
   - Keil
-  - Blog
   - 嵌入式
-featured: true
 ---
 
 ## # 前言

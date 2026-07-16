@@ -1,0 +1,128 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { productPermalink, sortByPubDateDesc } from "../../utils/content";
+
+const products = sortByPubDateDesc(await getCollection("products"));
+const tagCounts = new Map<string, number>();
+
+for (const product of products) {
+  for (const tag of product.data.tags) {
+    tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+  }
+}
+
+const tags = [...tagCounts.entries()].sort((left, right) => left[0].localeCompare(right[0], "zh-CN"));
+---
+
+<BaseLayout title="一拍即合" description="电子硬件与产品推荐">
+  <div class="container">
+    <section class="content-index" data-product-filter-scope>
+      <aside class="filter-panel" aria-label="产品筛选">
+        <div class="filter-panel-head">
+          <p class="panel-label">Tags</p>
+          <button class="text-button" type="button" data-product-clear>清除</button>
+        </div>
+        <div class="tag-filter-list">
+          {tags.map(([tag, count]) => (
+            <button class="tag-filter" type="button" data-product-tag-button data-tag={tag} aria-pressed="false">
+              <span>{tag}</span>
+              <strong>{count}</strong>
+            </button>
+          ))}
+        </div>
+      </aside>
+
+      <div class="content-results">
+        <header class="index-header">
+          <div>
+            <p class="eyebrow">Products</p>
+            <h1>一拍即合</h1>
+          </div>
+          <p class="result-count" data-product-result-count>{products.length} 个产品</p>
+        </header>
+
+        {products.length > 0 ? (
+          <div class="product-list">
+            {products.map((product) => (
+              <article class="product-list-item" data-product-filter-item data-tags={product.data.tags.join("|").toLowerCase()}>
+                <a class="product-cover" href={productPermalink(product.id)}>
+                  <img src={product.data.cover} alt={product.data.title} loading="lazy" />
+                </a>
+                <div class="product-summary">
+                  <h2><a href={productPermalink(product.id)}>{product.data.title}</a></h2>
+                  <p>{product.data.description}</p>
+                  {product.data.tags.length > 0 && (
+                    <div class="tag-row compact">
+                      {product.data.tags.map((tag) => (
+                        <button class="tag" type="button" data-product-inline-tag={tag}>{tag}</button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <p class="empty-state">暂时还没有产品内容。后续在 <code>src/content/products</code> 添加 Markdown 即可。</p>
+        )}
+
+        <p class="empty-state" data-product-empty-state hidden>没有找到匹配的产品。</p>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const scope = document.querySelector("[data-product-filter-scope]");
+
+    if (scope) {
+      const buttons = [...scope.querySelectorAll("[data-product-tag-button]")];
+      const inlineTags = [...scope.querySelectorAll("[data-product-inline-tag]")];
+      const items = [...scope.querySelectorAll("[data-product-filter-item]")];
+      const count = scope.querySelector("[data-product-result-count]");
+      const empty = scope.querySelector("[data-product-empty-state]");
+      let activeTag = "";
+
+      const applyFilter = () => {
+        let visible = 0;
+
+        for (const item of items) {
+          const tags = item.getAttribute("data-tags") ?? "";
+          const shouldShow = !activeTag || tags.split("|").includes(activeTag.toLowerCase());
+
+          item.toggleAttribute("hidden", !shouldShow);
+          if (shouldShow) visible += 1;
+        }
+
+        for (const button of buttons) {
+          button.setAttribute("aria-pressed", button.getAttribute("data-tag") === activeTag ? "true" : "false");
+        }
+
+        if (count) count.textContent = `${visible} 个产品`;
+        empty?.toggleAttribute("hidden", visible !== 0);
+      };
+
+      for (const button of buttons) {
+        button.addEventListener("click", () => {
+          const nextTag = button.getAttribute("data-tag") ?? "";
+          activeTag = activeTag === nextTag ? "" : nextTag;
+          applyFilter();
+        });
+      }
+
+      for (const tag of inlineTags) {
+        tag.addEventListener("click", () => {
+          activeTag = tag.getAttribute("data-product-inline-tag") ?? "";
+          applyFilter();
+        });
+      }
+
+      scope.querySelector("[data-product-clear]")?.addEventListener("click", () => {
+        activeTag = "";
+        applyFilter();
+      });
+
+      applyFilter();
+    }
+  </script>
+</BaseLayout>

@@ -14,6 +14,18 @@ export function galleryPermalink(id: string) {
   return `/gallery/${entrySlug(id)}/`;
 }
 
+export function productPermalink(id: string) {
+  return `/products/${entrySlug(id)}/`;
+}
+
+export function sortByPubDateDesc<
+  T extends {
+    data: { pubDate: Date };
+  }
+>(entries: T[]) {
+  return entries.sort((left, right) => right.data.pubDate.valueOf() - left.data.pubDate.valueOf());
+}
+
 export function sortFeaturedFirst<
   T extends {
     data: { featured?: boolean; pubDate: Date };

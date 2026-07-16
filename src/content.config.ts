@@ -1,5 +1,6 @@
 import { glob } from "astro/loaders";
-import { defineCollection, z } from "astro:content";
+import { defineCollection } from "astro:content";
+import { z } from "astro/zod";
 
 const commonMeta = z.object({
   title: z.string(),
@@ -13,8 +14,17 @@ const commonMeta = z.object({
 
 const blog = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/blog" }),
-  schema: commonMeta.extend({
-    featured: z.boolean().default(false)
+  schema: commonMeta
+});
+
+const products = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/products" }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    tags: z.array(z.string()).default([]),
+    cover: z.string(),
+    pubDate: z.coerce.date()
   })
 });
 
@@ -49,6 +59,7 @@ const gallery = defineCollection({
 
 export const collections = {
   blog,
+  products,
   weekly,
   gallery
 };

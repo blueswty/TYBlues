@@ -1,10 +1,10 @@
 import rss from "@astrojs/rss";
 import { getCollection } from "astro:content";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
-import { blogPermalink, sortFeaturedFirst } from "../utils/content";
+import { blogPermalink, sortByPubDateDesc } from "../utils/content";
 
 export async function GET(context) {
-  const posts = sortFeaturedFirst(await getCollection("blog", ({ data }) => !data.draft));
+  const posts = sortByPubDateDesc(await getCollection("blog", ({ data }) => !data.draft));
 
   return rss({
     title: SITE_TITLE,
