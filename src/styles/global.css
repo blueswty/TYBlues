@@ -64,6 +64,10 @@ img {
   max-width: 100%;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 code,
 pre {
   font-family: "Cascadia Code", "JetBrains Mono", Consolas, monospace;
