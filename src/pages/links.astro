@@ -1,37 +1,71 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { LINK_GROUPS } from "../data/links";
+import { existsSync, readFileSync } from "node:fs";
 
-const LOCAL_ICON_MAP: Record<string, string> = {
-  "www.taobao.com": "/site-icons/www.taobao.com.ico",
-  "www.jd.com": "/site-icons/www.jd.com.ico",
-  "www.bilibili.com": "/site-icons/www.bilibili.com.ico",
-  "github.com": "/site-icons/github.com.ico",
-  "gitee.com": "/site-icons/gitee.com.ico",
-  "my.feishu.cn": "/site-icons/my.feishu.cn.ico",
-  "www.zhihu.com": "/site-icons/www.zhihu.com.ico",
-  "smallpdf.com": "/site-icons/smallpdf.com.ico",
-  "www.ti.com": "/site-icons/www.ti.com.ico",
-  "www.st.com": "/site-icons/www.st.com.ico",
-  "oshwhub.com": "/site-icons/oshwhub.com.ico",
-  "www.aliyun.com": "/site-icons/www.aliyun.com.ico",
-  "cloud.tencent.com": "/site-icons/cloud.tencent.com.ico",
-  "www.cloudflare.com": "/site-icons/www.cloudflare.com.ico"
+const LOCAL_SVG_FALLBACK_MAP: Record<string, string> = {
+  "www.szlcsc.com": "szlcsc.svg",
+  "www.taobao.com": "taobao.svg",
+  "www.jd.com": "jd.svg",
+  "www.google.com": "google.svg",
+  "www.wikipedia.org": "wikipedia.svg",
+  "www.bilibili.com": "bilibili.svg",
+  "www.youtube.com": "youtube.svg",
+  "github.com": "github.svg",
+  "gitee.com": "gitee.svg",
+  "my.feishu.cn": "feishu.svg",
+  "www.zhihu.com": "zhihu.svg",
+  "smallpdf.com": "smallpdf.svg",
+  "www.ti.com": "ti.svg",
+  "www.st.com": "st.svg",
+  "www.analog.com": "adi.svg",
+  "www.espressif.com": "espressif.svg",
+  "www.snapeda.com": "snapeda.svg",
+  "oshwhub.com": "oshwhub.svg",
+  "everycircuit.com": "everycircuit.svg",
+  "www.tuv-lab.com": "tuv.svg",
+  "www.aliyun.com": "aliyun.svg",
+  "cloud.tencent.com": "tencent-cloud.svg",
+  "www.cloudflare.com": "cloudflare.svg"
 };
 
-function getFaviconCandidates(href: string) {
+function getPublicAssetPath(fileName: string) {
+  return `${import.meta.env.BASE_URL}site-icons/${fileName}`;
+}
+
+function hasPublicIcon(fileName: string) {
+  const iconUrl = new URL(`../../public/site-icons/${fileName}`, import.meta.url);
+  return existsSync(iconUrl);
+}
+
+function isRenderableImage(fileName: string) {
+  const iconUrl = new URL(`../../public/site-icons/${fileName}`, import.meta.url);
+
+  if (!existsSync(iconUrl)) {
+    return false;
+  }
+
+  const bytes = readFileSync(iconUrl).subarray(0, 8);
+  const header = Array.from(bytes);
+
+  return (
+    (header[0] === 0x00 && header[1] === 0x00 && (header[2] === 0x01 || header[2] === 0x02) && header[3] === 0x00) ||
+    (header[0] === 0x89 && header[1] === 0x50 && header[2] === 0x4e && header[3] === 0x47) ||
+    (header[0] === 0xff && header[1] === 0xd8 && header[2] === 0xff)
+  );
+}
+
+function getLocalIcon(href: string) {
   try {
     const url = new URL(href);
-    const domain = url.hostname;
-    const localIcon = LOCAL_ICON_MAP[domain];
+    const icoFile = `${url.hostname}.ico`;
 
-    return [
-      localIcon,
-      `${url.origin}/favicon.ico`,
-      `${url.origin}/apple-touch-icon.png`,
-      `https://icons.duckduckgo.com/ip3/${domain}.ico`,
-      `https://www.google.com/s2/favicons?domain=${domain}&sz=64`
-    ].join("|");
+    if (isRenderableImage(icoFile)) {
+      return getPublicAssetPath(icoFile);
+    }
+
+    const svgFile = LOCAL_SVG_FALLBACK_MAP[url.hostname];
+    return svgFile && hasPublicIcon(svgFile) ? getPublicAssetPath(svgFile) : "";
   } catch {
     return "";
   }
@@ -52,58 +86,24 @@ function getFaviconCandidates(href: string) {
         <section class="link-group">
           <h2>{group.title}</h2>
           <div class="link-grid">
-            {group.links.map((link) => (
-              <a class="site-link" href={link.href} target="_blank" rel="noreferrer">
-                <span class="site-icon" aria-hidden="true">
-                  <span class="site-icon-fallback">{link.name.slice(0, 1).toUpperCase()}</span>
-                  <img
-                    src=""
-                    alt=""
-                    loading="lazy"
-                    decoding="async"
-                    referrerpolicy="no-referrer"
-                    data-favicon
-                    data-favicon-sources={getFaviconCandidates(link.href)}
-                  />
-                </span>
-                <span>{link.name}</span>
-              </a>
-            ))}
+            {group.links.map((link) => {
+              const localIcon = getLocalIcon(link.href);
+
+              return (
+                <a class="site-link" href={link.href} target="_blank" rel="noreferrer">
+                  <span class:list={["site-icon", { "has-image": localIcon }]} aria-hidden="true">
+                    <span class="site-icon-fallback">{link.name.slice(0, 1).toUpperCase()}</span>
+                    {localIcon && (
+                      <img src={localIcon} alt="" loading="lazy" decoding="async" />
+                    )}
+                  </span>
+                  <span>{link.name}</span>
+                </a>
+              );
+            })}
           </div>
         </section>
       ))}
     </div>
   </div>
-
-  <script is:inline>
-    for (const icon of document.querySelectorAll("[data-favicon]")) {
-      const wrapper = icon.closest(".site-icon");
-      const sources = (icon.dataset.faviconSources ?? "").split("|").filter(Boolean);
-      let index = 0;
-
-      const tryNext = () => {
-        if (index >= sources.length) {
-          wrapper?.classList.remove("has-image");
-          icon.hidden = true;
-          return;
-        }
-
-        wrapper?.classList.remove("has-image");
-        icon.hidden = true;
-        icon.src = sources[index];
-        index += 1;
-      };
-
-      icon.addEventListener("load", () => {
-        icon.hidden = false;
-        wrapper?.classList.add("has-image");
-      });
-
-      icon.addEventListener("error", () => {
-        tryNext();
-      });
-
-      tryNext();
-    }
-  </script>
 </BaseLayout>
