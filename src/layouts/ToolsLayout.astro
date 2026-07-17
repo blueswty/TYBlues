@@ -20,14 +20,6 @@ const { title, description, currentCategoryId, currentToolId } = Astro.props;
       </button>
 
       <nav class="tools-nav" aria-label="Tools navigation" data-tools-nav>
-        <a
-          href="/tools"
-          class:list={["tools-overview-link", { "is-current": !currentToolId }]}
-          aria-current={!currentToolId ? "page" : undefined}
-        >
-          工具总览
-        </a>
-
         {TOOLS_BY_CATEGORY.map((category) => (
           <section class="tools-nav-section">
             <div class:list={["tools-nav-section-title", { "is-active": currentCategoryId === category.id }]}>

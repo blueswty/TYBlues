@@ -15,13 +15,16 @@ for (const post of posts) {
   }
 }
 
-const tags = [...tagCounts.entries()].sort((left, right) => left[0].localeCompare(right[0], "zh-CN"));
+const tags = [...tagCounts.entries()].sort((left, right) => {
+  if (right[1] !== left[1]) return right[1] - left[1];
+  return left[0].localeCompare(right[0], "zh-CN");
+});
 ---
 
 <section class="content-index" data-filter-scope>
   <aside class="filter-panel" aria-label="博客筛选">
     <div class="filter-panel-head">
-      <p class="panel-label">Tags</p>
+      <p class="panel-label">标签</p>
       <button class="text-button" type="button" data-clear-filter>清除</button>
     </div>
     <label class="filter-search">
@@ -78,65 +81,86 @@ const tags = [...tagCounts.entries()].sort((left, right) => left[0].localeCompar
   </div>
 </section>
 
-<script>
-  const scopes = document.querySelectorAll("[data-filter-scope]");
+<script is:inline>
+  (() => {
+    const scopes = document.querySelectorAll("[data-filter-scope]");
 
-  for (const scope of scopes) {
-    const search = scope.querySelector("[data-filter-search]");
-    const clear = scope.querySelector("[data-clear-filter]");
-    const buttons = [...scope.querySelectorAll("[data-tag-button]")];
-    const inlineTags = [...scope.querySelectorAll("[data-inline-tag]")];
-    const items = [...scope.querySelectorAll("[data-filter-item]")];
-    const count = scope.querySelector("[data-result-count]");
-    const empty = scope.querySelector("[data-empty-state]");
-    let activeTag = "";
+    for (const scope of scopes) {
+      const search = scope.querySelector("[data-filter-search]");
+      const clear = scope.querySelector("[data-clear-filter]");
+      const buttons = Array.from(scope.querySelectorAll("[data-tag-button]"));
+      const inlineTags = Array.from(scope.querySelectorAll("[data-inline-tag]"));
+      const items = Array.from(scope.querySelectorAll("[data-filter-item]"));
+      const count = scope.querySelector("[data-result-count]");
+      const empty = scope.querySelector("[data-empty-state]");
+      let activeTag = "";
 
-    const applyFilter = () => {
-      const query = search instanceof HTMLInputElement ? search.value.trim().toLowerCase() : "";
-      let visible = 0;
+      const applyFilter = () => {
+        const query =
+          search instanceof HTMLInputElement ? search.value.trim().toLowerCase() : "";
+        let visible = 0;
 
-      for (const item of items) {
-        const tags = item.getAttribute("data-tags") ?? "";
-        const title = item.getAttribute("data-title") ?? "";
-        const description = item.getAttribute("data-description") ?? "";
-        const matchesTag = !activeTag || tags.split("|").includes(activeTag.toLowerCase());
-        const matchesQuery = !query || title.includes(query) || description.includes(query) || tags.includes(query);
-        const shouldShow = matchesTag && matchesQuery;
+        for (const item of items) {
+          const itemTags = (item.getAttribute("data-tags") ?? "").split("|").filter(Boolean);
+          const title = (item.getAttribute("data-title") ?? "").toLowerCase();
+          const description = (item.getAttribute("data-description") ?? "").toLowerCase();
+          const matchesTag = !activeTag || itemTags.includes(activeTag.toLowerCase());
+          const matchesQuery =
+            !query ||
+            title.includes(query) ||
+            description.includes(query) ||
+            itemTags.some((tag) => tag.includes(query));
+          const shouldShow = matchesTag && matchesQuery;
 
-        item.toggleAttribute("hidden", !shouldShow);
-        if (shouldShow) visible += 1;
-      }
+          if (shouldShow) {
+            item.removeAttribute("hidden");
+            visible += 1;
+          } else {
+            item.setAttribute("hidden", "");
+          }
+        }
+
+        for (const button of buttons) {
+          const tagValue = button.getAttribute("data-tag") ?? "";
+          button.setAttribute("aria-pressed", tagValue === activeTag ? "true" : "false");
+        }
+
+        if (count) count.textContent = `${visible} 篇文章`;
+        if (empty) {
+          if (visible === 0) {
+            empty.removeAttribute("hidden");
+          } else {
+            empty.setAttribute("hidden", "");
+          }
+        }
+      };
 
       for (const button of buttons) {
-        button.setAttribute("aria-pressed", button.getAttribute("data-tag") === activeTag ? "true" : "false");
+        button.addEventListener("click", () => {
+          const nextTag = button.getAttribute("data-tag") ?? "";
+          activeTag = activeTag === nextTag ? "" : nextTag;
+          applyFilter();
+        });
       }
 
-      if (count) count.textContent = `${visible} 篇文章`;
-      empty?.toggleAttribute("hidden", visible !== 0);
-    };
+      for (const tag of inlineTags) {
+        tag.addEventListener("click", () => {
+          activeTag = tag.getAttribute("data-inline-tag") ?? "";
+          applyFilter();
+        });
+      }
 
-    for (const button of buttons) {
-      button.addEventListener("click", () => {
-        const nextTag = button.getAttribute("data-tag") ?? "";
-        activeTag = activeTag === nextTag ? "" : nextTag;
+      if (search instanceof HTMLInputElement) {
+        search.addEventListener("input", applyFilter);
+      }
+
+      clear?.addEventListener("click", () => {
+        activeTag = "";
+        if (search instanceof HTMLInputElement) search.value = "";
         applyFilter();
       });
-    }
 
-    for (const tag of inlineTags) {
-      tag.addEventListener("click", () => {
-        activeTag = tag.getAttribute("data-inline-tag") ?? "";
-        applyFilter();
-      });
-    }
-
-    search?.addEventListener("input", applyFilter);
-    clear?.addEventListener("click", () => {
-      activeTag = "";
-      if (search instanceof HTMLInputElement) search.value = "";
       applyFilter();
-    });
-
-    applyFilter();
-  }
+    }
+  })();
 </script>

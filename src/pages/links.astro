@@ -2,6 +2,23 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { LINK_GROUPS } from "../data/links";
 
+const LOCAL_ICON_MAP: Record<string, string> = {
+  "www.taobao.com": "/site-icons/www.taobao.com.ico",
+  "www.jd.com": "/site-icons/www.jd.com.ico",
+  "www.bilibili.com": "/site-icons/www.bilibili.com.ico",
+  "github.com": "/site-icons/github.com.ico",
+  "gitee.com": "/site-icons/gitee.com.ico",
+  "my.feishu.cn": "/site-icons/my.feishu.cn.ico",
+  "www.zhihu.com": "/site-icons/www.zhihu.com.ico",
+  "smallpdf.com": "/site-icons/smallpdf.com.ico",
+  "www.ti.com": "/site-icons/www.ti.com.ico",
+  "www.st.com": "/site-icons/www.st.com.ico",
+  "oshwhub.com": "/site-icons/oshwhub.com.ico",
+  "www.aliyun.com": "/site-icons/www.aliyun.com.ico",
+  "cloud.tencent.com": "/site-icons/cloud.tencent.com.ico",
+  "www.cloudflare.com": "/site-icons/www.cloudflare.com.ico"
+};
+
 function getDomain(href: string) {
   try {
     return new URL(href).hostname;
@@ -10,9 +27,22 @@ function getDomain(href: string) {
   }
 }
 
-function getFaviconUrl(href: string) {
-  const domain = getDomain(href);
-  return domain ? `https://www.google.com/s2/favicons?domain=${domain}&sz=64` : "";
+function getFaviconCandidates(href: string) {
+  try {
+    const url = new URL(href);
+    const domain = url.hostname;
+    const localIcon = LOCAL_ICON_MAP[domain];
+
+    return [
+      localIcon,
+      `${url.origin}/favicon.ico`,
+      `${url.origin}/apple-touch-icon.png`,
+      `https://icons.duckduckgo.com/ip3/${domain}.ico`,
+      `https://www.google.com/s2/favicons?domain=${domain}&sz=64`
+    ].join("|");
+  } catch {
+    return "";
+  }
 }
 ---
 
@@ -34,7 +64,15 @@ function getFaviconUrl(href: string) {
               <a class="site-link" href={link.href} target="_blank" rel="noreferrer">
                 <span class="site-icon" aria-hidden="true">
                   <span class="site-icon-fallback">{link.name.slice(0, 1).toUpperCase()}</span>
-                  <img src={getFaviconUrl(link.href)} alt="" loading="lazy" data-favicon />
+                  <img
+                    src=""
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    referrerpolicy="no-referrer"
+                    data-favicon
+                    data-favicon-sources={getFaviconCandidates(link.href)}
+                  />
                 </span>
                 <span>{link.name}</span>
               </a>
@@ -47,9 +85,33 @@ function getFaviconUrl(href: string) {
 
   <script is:inline>
     for (const icon of document.querySelectorAll("[data-favicon]")) {
-      icon.addEventListener("error", () => {
+      const wrapper = icon.closest(".site-icon");
+      const sources = (icon.dataset.faviconSources ?? "").split("|").filter(Boolean);
+      let index = 0;
+
+      const tryNext = () => {
+        if (index >= sources.length) {
+          wrapper?.classList.remove("has-image");
+          icon.hidden = true;
+          return;
+        }
+
+        wrapper?.classList.remove("has-image");
         icon.hidden = true;
+        icon.src = sources[index];
+        index += 1;
+      };
+
+      icon.addEventListener("load", () => {
+        icon.hidden = false;
+        wrapper?.classList.add("has-image");
       });
+
+      icon.addEventListener("error", () => {
+        tryNext();
+      });
+
+      tryNext();
     }
   </script>
 </BaseLayout>
