@@ -116,16 +116,23 @@ pre {
 .nav a {
   position: relative;
   padding: 0.6rem 0.75rem;
+  border: 1px solid transparent;
   color: var(--muted);
   font-size: 0.95rem;
   border-radius: 6px;
-  transition: color 160ms ease, background 160ms ease;
+  transition: color 160ms ease, background 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
 }
 
-.nav a:hover,
-.nav a[aria-current="page"] {
+.nav a:hover {
   color: var(--text);
   background: var(--surface-soft);
+}
+
+.nav a[aria-current="page"] {
+  color: var(--text);
+  background: var(--accent-soft);
+  border-color: rgba(14, 165, 164, 0.2);
+  box-shadow: 0 6px 16px rgba(24, 33, 47, 0.04);
 }
 
 .nav a[aria-current="page"]::after {
@@ -1038,8 +1045,9 @@ button.tag:hover {
 
 .tools-nav-link {
   display: block;
+  border: 1px solid transparent;
   border-radius: 6px;
-  transition: background 160ms ease, color 160ms ease;
+  transition: background 160ms ease, color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
 }
 
 .tools-nav-section {
@@ -1053,6 +1061,10 @@ button.tag:hover {
   text-transform: uppercase;
 }
 
+.tools-nav-section-title.is-active {
+  color: var(--text);
+}
+
 .tools-nav-links {
   gap: 0.25rem;
 }
@@ -1063,10 +1075,22 @@ button.tag:hover {
   font-size: 0.95rem;
 }
 
-.tools-nav-link:hover,
-.tools-nav-link.is-current {
+.tools-nav-link:hover {
   background: var(--accent-soft);
   color: var(--accent-strong);
+  border-color: rgba(14, 165, 164, 0.18);
+}
+
+.tools-nav-link.is-current {
+  background: linear-gradient(135deg, rgba(14, 165, 164, 0.16), rgba(3, 105, 161, 0.1));
+  color: var(--text);
+  border-color: rgba(14, 165, 164, 0.28);
+  box-shadow: inset 3px 0 0 var(--accent), 0 8px 18px rgba(24, 33, 47, 0.05);
+  font-weight: 650;
+}
+
+.tools-nav-link.is-current:hover {
+  transform: none;
 }
 
 .tools-main,
