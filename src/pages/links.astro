@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { LINK_GROUPS } from "../data/links";
 import { existsSync, readFileSync } from "node:fs";
+import { resolve } from "node:path";
 
 const LOCAL_SVG_FALLBACK_MAP: Record<string, string> = {
   "www.szlcsc.com": "szlcsc.svg",
@@ -33,19 +34,22 @@ function getPublicAssetPath(fileName: string) {
   return `${import.meta.env.BASE_URL}site-icons/${fileName}`;
 }
 
+function getPublicIconFilePath(fileName: string) {
+  return resolve(process.cwd(), "public", "site-icons", fileName);
+}
+
 function hasPublicIcon(fileName: string) {
-  const iconUrl = new URL(`../../public/site-icons/${fileName}`, import.meta.url);
-  return existsSync(iconUrl);
+  return existsSync(getPublicIconFilePath(fileName));
 }
 
 function isRenderableImage(fileName: string) {
-  const iconUrl = new URL(`../../public/site-icons/${fileName}`, import.meta.url);
+  const iconPath = getPublicIconFilePath(fileName);
 
-  if (!existsSync(iconUrl)) {
+  if (!existsSync(iconPath)) {
     return false;
   }
 
-  const bytes = readFileSync(iconUrl).subarray(0, 8);
+  const bytes = readFileSync(iconPath).subarray(0, 8);
   const header = Array.from(bytes);
 
   return (
