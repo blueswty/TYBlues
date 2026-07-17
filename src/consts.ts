@@ -5,7 +5,7 @@ export const SITE_URL = "https://tyblues.cn";
 export const NAV_ITEMS = [
   { href: "/", label: "博客" },
   { href: "/links", label: "链接" },
-  { href: "/tools", label: "在线工具" },
+  { href: "/tools/data/crc-checksum", label: "在线工具" },
   { href: "/products", label: "一拍即合" }
 ];
 
