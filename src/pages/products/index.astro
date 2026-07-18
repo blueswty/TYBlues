@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { productPermalink, sortByPubDateDesc } from "../../utils/content";
+import { getProductDescription, productPermalink, sortByPubDateDesc } from "../../utils/content";
 
 const products = sortByPubDateDesc(await getCollection("products"));
 const tagCounts = new Map<string, number>();
@@ -51,7 +51,7 @@ const tags = [...tagCounts.entries()].sort((left, right) => left[0].localeCompar
                 </a>
                 <div class="product-summary">
                   <h2><a href={productPermalink(product.id)}>{product.data.title}</a></h2>
-                  <p>{product.data.description}</p>
+                  <p>{getProductDescription(product)}</p>
                   {product.data.tags.length > 0 && (
                     <div class="tag-row compact">
                       {product.data.tags.map((tag) => (

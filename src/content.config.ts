@@ -21,7 +21,7 @@ const products = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/products" }),
   schema: z.object({
     title: z.string(),
-    description: z.string(),
+    description: z.string().optional(),
     tags: z.array(z.string()).default([]),
     cover: z.string(),
     pubDate: z.coerce.date()

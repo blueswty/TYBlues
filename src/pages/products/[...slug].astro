@@ -1,7 +1,7 @@
 ---
 import { getCollection, render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { entrySlug, sortByPubDateDesc } from "../../utils/content";
+import { entrySlug, getProductDescription, sortByPubDateDesc } from "../../utils/content";
 
 export async function getStaticPaths() {
   const products = sortByPubDateDesc(await getCollection("products"));
@@ -14,9 +14,10 @@ export async function getStaticPaths() {
 const { product } = Astro.props;
 const { Content, headings } = await render(product);
 const tocHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+const productDescription = getProductDescription(product);
 ---
 
-<BaseLayout title={`${product.data.title} | 一拍即合`} description={product.data.description}>
+<BaseLayout title={`${product.data.title} | 一拍即合`} description={productDescription}>
   <div class="post-layout">
     {tocHeadings.length > 0 && (
       <aside class="post-toc">
@@ -42,7 +43,7 @@ const tocHeadings = headings.filter((heading) => heading.depth === 2 || heading.
       <div class="product-hero-image">
         <img src={product.data.cover} alt={product.data.title} />
       </div>
-      <p class="page-intro">{product.data.description}</p>
+      <p class="page-intro">{productDescription}</p>
       <div class="post-body">
         <Content />
       </div>
