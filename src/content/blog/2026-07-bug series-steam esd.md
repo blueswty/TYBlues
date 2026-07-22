@@ -1,9 +1,9 @@
 ---
-title: "[BUG分析] 蒸汽系统下的 MCU 死机问题"
+title: "[BUG分析] 蒸汽系统下的MCU死机问题"
 description: "一次由蒸汽系统静电释放引发的 MCU 死机案例"
 pubDate: 2026-07-22
 tags:
-  - BUG
+  - BUG分析
   - 硬件
   - ESD
 ---
