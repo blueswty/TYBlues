@@ -7,13 +7,13 @@ tags:
   - 嵌入式
 ---
 
-## # 前言
+## 前言
 
 安装Keil 537版本，编译工程报错。原因是新版Keil不再默认安装AC5编译器。
 
 >  *** Target 'hub' uses ARM-Compiler 'Default Compiler Version 5' which is not available.
 
-## # 下载AC5编译器
+## 下载AC5编译器
 
 官方下载地址[ARM(戳此链接)]([Downloads - Arm Developer](https://developer.arm.com/downloads/view/ACOMP5))
 
@@ -21,7 +21,7 @@ tags:
 
 可以使用[百度网盘(戳此链接)]([pan.baidu.com/s/1Qfqzaemwtm1Cjq1orvooww?pwd=t7u6](http://pan.baidu.com/s/1Qfqzaemwtm1Cjq1orvooww?pwd=t7u6))进行下载
 
-## # 安装AC5编译器
+## 安装AC5编译器
 
 安装路径和AC6的并行，否则可能报安装不正确
 
@@ -35,6 +35,6 @@ tags:
 
 ![](https://picgocloud.com/m/50008ed0-5549-43fd-82c8-e01e5370b6ef.png)
 
-## # 参考
+## 参考
 
 [Keil MDK v5.43 添加AC5(ARMCC)编译器 - 辛亚平 - 博客园](https://www.cnblogs.com/yapingxin/p/19084006)
