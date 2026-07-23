@@ -6,6 +6,8 @@ import { resolve } from "node:path";
 
 const LOCAL_SVG_FALLBACK_MAP: Record<string, string> = {
   "www.szlcsc.com": "szlcsc.svg",
+  "jlcpcb.com": "szlcsc.svg",
+  "tools.jlc.com": "szlcsc.svg",
   "www.taobao.com": "taobao.svg",
   "www.jd.com": "jd.svg",
   "www.google.com": "google.svg",
@@ -13,7 +15,10 @@ const LOCAL_SVG_FALLBACK_MAP: Record<string, string> = {
   "www.bilibili.com": "bilibili.svg",
   "www.youtube.com": "youtube.svg",
   "github.com": "github.svg",
+  "docs.github.com": "github.svg",
   "gitee.com": "gitee.svg",
+  "stackoverflow.com": "stackoverflow.svg",
+  "electronics.stackexchange.com": "electronics-se.svg",
   "my.feishu.cn": "feishu.svg",
   "www.zhihu.com": "zhihu.svg",
   "smallpdf.com": "smallpdf.svg",
@@ -21,13 +26,24 @@ const LOCAL_SVG_FALLBACK_MAP: Record<string, string> = {
   "www.st.com": "st.svg",
   "www.analog.com": "adi.svg",
   "www.espressif.com": "espressif.svg",
+  "docs.espressif.com": "espressif.svg",
+  "www.microchip.com": "microchip.svg",
+  "www.nordicsemi.com": "nordic.svg",
   "www.snapeda.com": "snapeda.svg",
+  "www.altium.com": "altium.svg",
   "oshwhub.com": "oshwhub.svg",
   "everycircuit.com": "everycircuit.svg",
+  "docs.platformio.org": "platformio.svg",
+  "docs.arduino.cc": "arduino.svg",
+  "docs.zephyrproject.org": "zephyr.svg",
+  "www.arm.com": "arm.svg",
+  "www.freertos.org": "freertos.svg",
+  "www.iec.ch": "iec.svg",
   "www.tuv-lab.com": "tuv.svg",
   "www.aliyun.com": "aliyun.svg",
   "cloud.tencent.com": "tencent-cloud.svg",
-  "www.cloudflare.com": "cloudflare.svg"
+  "www.cloudflare.com": "cloudflare.svg",
+  "developers.cloudflare.com": "cloudflare.svg"
 };
 
 function getPublicAssetPath(fileName: string) {
