@@ -15,11 +15,12 @@ const { album } = Astro.props;
 ---
 
 <BaseLayout title={`${album.data.title} | Gallery`} description={album.data.description}>
-  <div class="album-layout">
-    <article class="post-shell album-shell">
-      <header class="album-header">
+  <div class="container">
+    <article class="album-shell">
+      <header class="album-hero">
         <p class="eyebrow">Photo Album</p>
         <h1>{album.data.title}</h1>
+        <p class="album-lead">{album.data.description}</p>
         <div class="meta">
           <span>{album.data.pubDate.toLocaleDateString("zh-CN")}</span>
           {album.data.location && <span>{album.data.location}</span>}
@@ -33,15 +34,9 @@ const { album } = Astro.props;
         )}
       </header>
 
-      <section class="album-summary">
-        <div class="post-body">
-          <p>{album.data.description}</p>
-        </div>
-      </section>
-
-      <section class="album-grid">
-        {album.data.images.map((image) => (
-          <figure class="album-item">
+      <section class="album-gallery">
+        {album.data.images.map((image, index) => (
+          <figure class:list={["album-item", { "is-featured": index === 0 && album.data.images.length > 2 }]}>
             <img src={image.src} alt={image.alt ?? album.data.title} loading="lazy" />
             {image.caption && <figcaption>{image.caption}</figcaption>}
           </figure>

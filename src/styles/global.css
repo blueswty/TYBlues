@@ -1458,16 +1458,36 @@ button.tag:focus-visible {
   font-size: 0.82rem;
 }
 
-.album-layout {
-  width: min(calc(100% - 2rem), 68rem);
+.album-shell {
+  width: min(100%, 64rem);
   margin: 2rem auto 0;
 }
 
-.album-header {
-  margin-bottom: 2rem;
+.album-hero {
+  display: grid;
+  gap: 0.9rem;
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbfd 100%);
 }
 
-.album-grid {
+.album-hero h1 {
+  margin: 0;
+  color: var(--text);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  line-height: 1.12;
+}
+
+.album-lead {
+  margin: 0;
+  max-width: 46rem;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.album-gallery {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
@@ -1484,6 +1504,15 @@ button.tag:focus-visible {
   margin-top: 0.75rem;
   color: var(--muted);
   line-height: 1.7;
+}
+
+.album-item.is-featured {
+  grid-column: 1 / -1;
+}
+
+.album-item.is-featured img {
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
 }
 
 .gallery-cover {
@@ -1580,7 +1609,7 @@ button.tag:focus-visible {
   .grid.cols-2,
   .tool-field-grid,
   .tool-data-grid,
-  .album-grid {
+  .album-gallery {
     grid-template-columns: 1fr;
   }
 

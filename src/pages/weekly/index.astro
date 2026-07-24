@@ -8,14 +8,13 @@ const issues = (await getCollection("weekly", ({ data }) => !data.draft))
   .sort((a, b) => b.data.issue - a.data.issue);
 ---
 
-<BaseLayout title="Weekly" description="周刊列表">
+<BaseLayout title="周刊" description="周刊列表">
   <div class="container">
-    <header class="page-header">
-      <span class="eyebrow">Weekly</span>
-      <h1 class="page-title">把一周的输入，整理成输出。</h1>
-      <p class="page-intro">
-        你所做的每件事，都将在未来连成一条线。
-      </p>
+    <header class="index-header single">
+      <div>
+        <p class="eyebrow">Weekly</p>
+        <h1>把一周的输入，整理成输出。</h1>
+      </div>
     </header>
     <div class="timeline">
       {issues.map((issue) => (

@@ -8,14 +8,13 @@ const galleryItems = (await getCollection("gallery", ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
-<BaseLayout title="Gallery" description="相册与影像入口">
+<BaseLayout title="相册" description="相册与影像入口">
   <div class="container">
-    <header class="page-header">
-      <span class="eyebrow">Gallery</span>
-      <h1 class="page-title">时空弧光。</h1>
-      <p class="page-intro">
-        当下瞬间可能是未来阴天里的一道光，把握现在、雕刻现在。
-      </p>
+    <header class="index-header single">
+      <div>
+        <p class="eyebrow">Gallery</p>
+        <h1>时间里的取景框。</h1>
+      </div>
     </header>
     <div class="grid cols-3">
       {galleryItems.map((item) => (
