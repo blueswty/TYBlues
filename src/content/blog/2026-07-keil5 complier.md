@@ -1,5 +1,5 @@
 ---
-title: "Keil安装AC5编译器"
+title: "[嵌入式] Keil安装AC5编译器"
 description: "新版Keil5 不再默认安装AC5编译器。"
 pubDate: 2026-07-09
 tags:

@@ -1,5 +1,5 @@
 ---
-title: "Printf 重定向Retarget"
+title: "[嵌入式] Printf 重定向Retarget"
 description: "将printf输出到串口，则需要将fputc里面的输出指向串口。"
 pubDate: 2026-07-09
 tags:

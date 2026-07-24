@@ -5,7 +5,7 @@ import ContentCard from "../../components/ContentCard.astro";
 import { weeklyPermalink } from "../../utils/content";
 
 const issues = (await getCollection("weekly", ({ data }) => !data.draft))
-  .sort((a, b) => b.data.issue - a.data.issue);
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
 ---
 
 <BaseLayout title="周刊" description="周刊列表">
@@ -22,7 +22,7 @@ const issues = (await getCollection("weekly", ({ data }) => !data.draft))
           href={weeklyPermalink(issue.id)}
           title={issue.data.title}
           description={issue.data.description}
-          meta={[`Issue ${issue.data.issue}`, issue.data.pubDate.toLocaleDateString("zh-CN")]}
+          meta={[issue.data.pubDate.toLocaleDateString("zh-CN")]}
           tags={issue.data.tags}
         />
       ))}

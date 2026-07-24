@@ -31,7 +31,6 @@ const products = defineCollection({
 const weekly = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/weekly" }),
   schema: commonMeta.extend({
-    issue: z.number(),
     highlights: z.array(z.string()).default([])
   })
 });
